@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+        <script src="datamaps.world.min.js"></script>
+        <script src="jquery.js"></script>
+
+    </head>
+    <body style="margin:0;">
+
+        <div id="map" style="position: relative; width: 95vw; height: 80vh; margin: auto;"></div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <p>
+                        Round: <span id="sliderValue"></span>
+                    </p>
+                    <div class="form-group">
+                        <input type="range" id="roundSlider" class="custom-range" name="round" min="0" onchange="sliderChange()">
+                    </div>
+                    <!--
+                    <div class="input-group mb-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="inputGroupFile02">
+                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </div>
+
+        <script src="onescript.js"></script>
+
+
+    </body>
+</html>
+
