@@ -2,7 +2,7 @@ package de.tubs.pandemieinc;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-enum Strength {
+public enum Strength {
     VERY_HIGH(2, "++"),
     HIGH(1, "+"),
     MIDDLE(0, "o"),

@@ -16,6 +16,12 @@ import de.tubs.pandemieinc.ActionHelper;
 import java.util.ArrayList;
 
 import de.tubs.pandemieinc.implementations.BogoImplementation;
+import de.tubs.pandemieinc.implementations.VaccDeadlyFirstImplementation;
+import de.tubs.pandemieinc.implementations.MedDeadlyFirstImplementation;
+import de.tubs.pandemieinc.implementations.VaccFastFirstImplementation;
+import de.tubs.pandemieinc.implementations.MedFastFirstImplementation;
+import de.tubs.pandemieinc.implementations.VaccSlowFirstImplementation;
+import de.tubs.pandemieinc.implementations.MedSlowFirstImplementation;
 
 import de.tubs.pandemieinc.events.*;
 import java.util.ArrayList;
@@ -55,6 +61,95 @@ public class PandemieIncController {
         return action;
     }
 
+    @RequestMapping(value="/deadlyVacc", method=RequestMethod.POST, produces="application/json")
+    public String deadlyVacc(@RequestBody Round round) {
+    
+        if (!round.outcome.equals("pending")) {
+            System.out.println("Game end: " + round.outcome);
+            return ActionPrinter.endRound();
+        }
+        
+        VaccDeadlyFirstImplementation implement = new VaccDeadlyFirstImplementation(round);
+        String action = implement.selectAction();
+        System.out.println("VaccDeadlyFirstImplementation: " + action);
+        return action;
+    
+    }
+    
+    @RequestMapping(value="/deadlyMed", method=RequestMethod.POST, produces="application/json")
+    public String deadlyMed(@RequestBody Round round) {
+    
+        if (!round.outcome.equals("pending")) {
+            System.out.println("Game end: " + round.outcome);
+            return ActionPrinter.endRound();
+        }
+        
+        MedDeadlyFirstImplementation implement = new MedDeadlyFirstImplementation(round);
+        String action = implement.selectAction();
+        System.out.println("MedDeadlyFirstImplementation: " + action);
+        return action;
+    
+    }
+    
+    @RequestMapping(value="/fastVacc", method=RequestMethod.POST, produces="application/json")
+    public String fastVacc(@RequestBody Round round) {
+    
+        if (!round.outcome.equals("pending")) {
+            System.out.println("Game end: " + round.outcome);
+            return ActionPrinter.endRound();
+        }
+        
+        VaccFastFirstImplementation implement = new VaccFastFirstImplementation(round);
+        String action = implement.selectAction();
+        System.out.println("VaccFastFirstImplementation: " + action);
+        return action;
+    
+    }
+    
+    @RequestMapping(value="/fastMed", method=RequestMethod.POST, produces="application/json")
+    public String fastMed(@RequestBody Round round) {
+    
+        if (!round.outcome.equals("pending")) {
+            System.out.println("Game end: " + round.outcome);
+            return ActionPrinter.endRound();
+        }
+        
+        MedFastFirstImplementation implement = new MedFastFirstImplementation(round);
+        String action = implement.selectAction();
+        System.out.println("MedFastFirstImplementation: " + action);
+        return action;
+    
+    }
+    
+    @RequestMapping(value="/slowVacc", method=RequestMethod.POST, produces="application/json")
+    public String slowVacc(@RequestBody Round round) {
+    
+        if (!round.outcome.equals("pending")) {
+            System.out.println("Game end: " + round.outcome);
+            return ActionPrinter.endRound();
+        }
+        
+        VaccSlowFirstImplementation implement = new VaccSlowFirstImplementation(round);
+        String action = implement.selectAction();
+        System.out.println("VaccSlowFirstImplementation: " + action);
+        return action;
+    
+    }
+    
+    @RequestMapping(value="/slowMed", method=RequestMethod.POST, produces="application/json")
+    public String slowMed(@RequestBody Round round) {
+    
+        if (!round.outcome.equals("pending")) {
+            System.out.println("Game end: " + round.outcome);
+            return ActionPrinter.endRound();
+        }
+        
+        MedSlowFirstImplementation implement = new MedSlowFirstImplementation(round);
+        String action = implement.selectAction();
+        System.out.println("MedSlowFirstImplementation: " + action);
+        return action;
+    
+    }
     @RequestMapping(value="/test", method=RequestMethod.POST, produces="application/json")
     public String testQuarantine(@RequestBody Round round) {
 
