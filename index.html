@@ -12,27 +12,105 @@
         <script src="jquery.js"></script>
 
     </head>
-    <body style="margin:0;">
+    <body>
 
-        <div id="map" style="position: relative; width: 95vw; height: 80vh; margin: auto;"></div>
+        <div id="map" style="position: relative; width: 100vw; height: 43vw;"></div>
 
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <p>
-                        Round: <span id="sliderValue"></span>
-                    </p>
-                    <div class="form-group">
-                        <input type="range" id="roundSlider" class="custom-range" name="round" min="0" onchange="sliderChange()">
-                    </div>
-                    <!--
-                    <div class="input-group mb-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputGroupFile02">
-                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+        <div class="row mr-0">
+            <div class="col-11" style="margin:auto;">
+                <div class="row">
+                    <div class="col-8 px-2">
+                        <div class="row" id="pathogeneInfo">
+            
+                            <div class="col-4 mb-3 px-2">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Settings
+                                    </div> 
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col text-right">Curt. inf. cities: </div>
+                                            <div class="col">100.000</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col text-right">Curt. inf. humans: </div>
+                                            <div class="col">100.000</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col text-right">Curt. kil. humans: </div>
+                                            <div class="col">100.000</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col text-right">Tot. inf. humans: </div>
+                                            <div class="col">100.000</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col text-right">Tot. kil. humans: </div>
+                                            <div class="col">100.000</div>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </div>
+            
+                            <div class="col-4 mb-3 px-2">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Settings
+                                    </div> 
+                                    <div class="card-body">
+                                        Some quick example text to build on the card title and make up the bulk of the card's content.
+                                    </div>
+                                </div>        
+                            </div>
+
+                            <div class="col-4 mb-3 px-2">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Settings
+                                    </div> 
+                                    <div class="card-body">
+                                        Some quick example text to build on the card title and make up the bulk of the card's content.
+                                    </div>
+                                </div>        
+                            </div>
+
+                            <div class="col-4 mb-3 px-2">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Settings
+                                    </div> 
+                                    <div class="card-body">
+                                        Some quick example text to build on the card title and make up the bulk of the card's content.
+                                    </div>
+                                </div>        
+                            </div>
+
                         </div>
                     </div>
-                    -->
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-header">
+                                Settings
+                            </div> 
+                            <div class="card-body">
+                                <p>
+                                    Round: <span id="sliderValue"></span>
+                                </p>
+                                <div class="form-group">
+                                    <input type="range" id="roundSlider" class="custom-range" name="round" min="0" onchange="sliderChange()">
+                                </div>
+                                <!--
+                                <div class="input-group mb-3">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="inputGroupFile02">
+                                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                                    </div>
+                                </div>
+                                -->
+            
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
