@@ -5,7 +5,7 @@ import de.tubs.pandemieinc.events.BaseEvent;
 
 public class ConnectionClosedEvent extends BaseEvent  {
 
-    public static String eventName = "connectionClosed";
+    public static final String eventName = "connectionClosed";
 
     public City city;
     public int sinceRound;

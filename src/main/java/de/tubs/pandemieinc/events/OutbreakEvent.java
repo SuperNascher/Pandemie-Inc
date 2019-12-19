@@ -5,7 +5,7 @@ import de.tubs.pandemieinc.events.BaseEvent;
 
 public class OutbreakEvent extends BaseEvent  {
 
-	public static String eventName = "outbreak";
+    public static String eventName = "outbreak";
 
     public Pathogen pathogen;
     public double prevalence;
@@ -13,8 +13,8 @@ public class OutbreakEvent extends BaseEvent  {
 
     public OutbreakEvent(Pathogen pathogen, double prevalence, int sinceRound) {
     	super(eventName);
-        this.pathogen = pathogen;
-        this.prevalence = prevalence;
-        this.sinceRound = sinceRound;
+      this.pathogen = pathogen;
+      this.prevalence = prevalence;
+      this.sinceRound = sinceRound;
     }
 }

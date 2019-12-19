@@ -15,176 +15,258 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+/**
+ * A Factory class to create the event classes from the JSON (JsonNode).
+ * The handling of parsing the events can be modificated through the
+ * "parseMapping" variable.
+ */
 public class EventFactory {
 
 	// Pathogen name, Pathogen class (to avoid creating unnessary Pathogen classes)
     public Map<String, Pathogen> pathogens;
     public Map<String, City> cities;
-    public Map<String, Function<JsonNode, BaseEvent>> eventParserMapping;
+    public Map<String, Function<JsonNode, BaseEvent>> parserMapping;
 
+    /**
+     * Constructor for EventFactory with given city map.
+     * @param cities City map, where the key is the String name of the city
+     */
     public EventFactory(Map<String, City> cities) {
         this.cities = cities;
         this.pathogens = new HashMap<String, Pathogen>();
+        this.parserMapping = new HashMap<String, Function<JsonNode, BaseEvent>>();
 
-        this.eventParserMapping = new HashMap<String, Function<JsonNode, BaseEvent>>();
+        // AntiVaccinationismEvent
+        this.parserMapping
+            .put(AntiVaccinationismEvent.eventName,
+                 node -> this.parseSimpleEvent(node, "sinceRound",
+                                               AntiVaccinationismEvent::new));
 
-        this.eventParserMapping.put(AntiVaccinationismEvent.eventName,
-                                    node -> this.parseFromSimpleEvent(node, AntiVaccinationismEvent::new));
-        this.eventParserMapping.put(AirportClosedEvent.eventName, this::parseAirportClosedEvent);
-        this.eventParserMapping.put(BioTerrorismEvent.eventName, this::parseBioTerrorismEvent);
-        this.eventParserMapping.put(CampaignLaunchedEvent.eventName, this::parseCampaignLaunchedEvent);
-        this.eventParserMapping.put(ConnectionClosedEvent.eventName, this::parseConnectionClosedEvent);
-        this.eventParserMapping.put(EconomicCrisisEvent.eventName,
-                                    node -> this.parseFromSimpleEvent(node, EconomicCrisisEvent::new));
-        this.eventParserMapping.put(ElectionsCalledEvent.eventName, this::parseElectionsCalledEvent);
-        this.eventParserMapping.put(HygienicMeasuresAppliedEvent.eventName,
-                                    this::parseHygienicMeasuresAppliedEvent);
-        this.eventParserMapping.put(InfluenceExertedEvent.eventName, this::parseInfluenceExertedEvent);
-        this.eventParserMapping.put(LargeScalePanicEvent.eventName,
-                                    node -> this.parseFromSimpleEvent(node, LargeScalePanicEvent::new));
-        this.eventParserMapping.put(MedicationAvailableEvent.eventName,
-                                    node -> this.parsePandemieEvent(node, MedicationAvailableEvent::new));
-        this.eventParserMapping.put(MedicationDeployedEvent.eventName,
-                                    node -> this.parseMedicationDeployedEvent(node));
-        this.eventParserMapping.put(MedicationInDevelopmentEvent.eventName,
-                                    node -> this.parseInDevelopmentEvent(node, MedicationInDevelopmentEvent::new));
-        this.eventParserMapping.put(OutbreakEvent.eventName, this::parseOutbreakEvent);
-        this.eventParserMapping.put(PathogenEncounteredEvent.eventName,
-                                    this::parsePathogenEncounteredEvent);
-        this.eventParserMapping.put(QuarantineEvent.eventName, this::parseQuarantineEvent);
-        this.eventParserMapping.put(UprisingEvent.eventName, this::parseUprisingEvent);
-        this.eventParserMapping.put(VaccineAvailableEvent.eventName,
-                                    node -> this.parsePandemieEvent(node, VaccineAvailableEvent::new));
-        this.eventParserMapping.put(VaccineDeployedEvent.eventName,
-                                    node -> this.parseVaccineDeployedEvent(node));
-        this.eventParserMapping.put(VaccineInDevelopmentEvent.eventName,
-                                    node -> this.parseInDevelopmentEvent(node, VaccineInDevelopmentEvent::new));
+        // AirportClosedEvent
+        this.parserMapping
+            .put(AirportClosedEvent.eventName,
+                 node -> this.parseTimedEvent(node, AirportClosedEvent::new));
+
+        // BioTerrorismEvent
+        this.parserMapping
+            .put(BioTerrorismEvent.eventName,
+                 node -> parsePathogenEvent(node, "round",
+                                            BioTerrorismEvent::new));
+
+        // CampaignLaunchedEvent
+        this.parserMapping
+            .put(CampaignLaunchedEvent.eventName,
+                 node -> parseSimpleEvent(node, "round",
+                                          CampaignLaunchedEvent::new));
+
+        // ConnectionClosedEvent
+        this.parserMapping.put(ConnectionClosedEvent.eventName,
+                               this::parseConnectionClosedEvent);
+
+        // EcnomonCrisisEvent
+        this.parserMapping
+            .put(EconomicCrisisEvent.eventName,
+                 node -> this.parseSimpleEvent(node, "sinceRound",
+                                               EconomicCrisisEvent::new));
+
+        // ElectionsCalledEvent
+        this.parserMapping
+            .put(ElectionsCalledEvent.eventName,
+                 node -> this.parseSimpleEvent(node, "round",
+                                               ElectionsCalledEvent::new));
+
+        // HygienicMeasuresAppliedEvent
+        this.parserMapping
+            .put(HygienicMeasuresAppliedEvent.eventName,
+                 node ->
+                 this.parseSimpleEvent(node, "round",
+                                       HygienicMeasuresAppliedEvent::new));
+
+        // InfluenceExertedEvent
+        this.parserMapping
+            .put(InfluenceExertedEvent.eventName,
+                 node -> this.parseSimpleEvent(node, "round",
+                                               InfluenceExertedEvent::new));
+
+        // LargeScalePanicEvent
+        this.parserMapping
+            .put(LargeScalePanicEvent.eventName,
+                 node -> this.parseSimpleEvent(node, "sinceRound",
+                                               LargeScalePanicEvent::new));
+
+        // MedicationAvailableEvent
+        this.parserMapping
+            .put(MedicationAvailableEvent.eventName,
+                 node ->
+                 this.parsePathogenEvent(node, "sinceRound",
+                                         MedicationAvailableEvent::new));
+
+        // MedicationDeployedEvent
+        this.parserMapping
+            .put(MedicationDeployedEvent.eventName,
+                 node -> this.parsePathogenEvent(node, "round",
+                                                 MedicationDeployedEvent::new));
+
+        // MedicationInDevelopmentEvent
+        this.parserMapping
+            .put(MedicationInDevelopmentEvent.eventName,
+                 node ->
+                 this.parseInDevelopmentEvent(node,
+                                              MedicationInDevelopmentEvent::new)
+                 );
+
+        // OutbreakEvent
+        this.parserMapping.put(OutbreakEvent.eventName,
+                               this::parseOutbreakEvent);
+
+        // PathogenEncounteredEvent
+        this.parserMapping
+            .put(PathogenEncounteredEvent.eventName,
+                 node -> this.parsePathogenEvent(node, "round",
+                                                 PathogenEncounteredEvent::new)
+                 );
+
+        // QuarantineEvent
+        this.parserMapping
+            .put(QuarantineEvent.eventName,
+                 node -> this.parseTimedEvent(node, QuarantineEvent::new));
+
+        // UprisingEvent
+        this.parserMapping.put(UprisingEvent.eventName,
+                               this::parseUprisingEvent);
+
+        // VaccineAvailableEvent
+        this.parserMapping
+            .put(VaccineAvailableEvent.eventName,
+                 node -> this.parsePathogenEvent(node, "sinceRound",
+                                                 VaccineAvailableEvent::new));
+
+        // VaccineDeployedEvent
+        this.parserMapping
+            .put(VaccineDeployedEvent.eventName,
+                 node -> this.parsePathogenEvent(node, "round",
+                                                 VaccineDeployedEvent::new));
+
+        // VaccineInDevelopmentEvent
+        this.parserMapping
+            .put(VaccineInDevelopmentEvent.eventName,
+                 node ->
+                 this.parseInDevelopmentEvent(node,
+                                              VaccineInDevelopmentEvent::new));
     }
 
-	public BaseEvent parseFromJsonNode(JsonNode node) {
-		// Parse the event type
-		JsonNode eventType = node.get("type");
-		if (eventType == null) {
-			return null;
-		}
+    /**
+     * Parse the event from a JsonNode object.
+     * @param node A event JsonNode object
+     * @return The event object or null, if an error occurred
+     */
+    public BaseEvent parseFromJsonNode(JsonNode node) {
+        // Parse the event type
+        JsonNode eventType = node.get("type");
+        if (eventType == null) {
+            return null;
+        }
 
-		// Try to parse the event from the know ones
-		String type = eventType.textValue();
-		Function<JsonNode, BaseEvent> parseFun = this.eventParserMapping.get(type);
-		if (parseFun != null) {
-			return parseFun.apply(node);
-		}
+        // Try to parse the event from the know ones
+        String type = eventType.textValue();
+        Function<JsonNode, BaseEvent> parseFun = this.parserMapping.get(type);
+        if (parseFun != null) {
+            return parseFun.apply(node);
+        }
 
-		return this.parseOtherEvent(node);
-	}
+        return this.parseOtherEvent(node);
+    }
 
-	public OtherEvent parseOtherEvent(JsonNode node) {
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> fields = mapper.convertValue(node, new TypeReference<HashMap<String, Object>>(){});
-		try {
-    		String debug = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fields);
-        System.out.println(debug);
+    /**
+     * Parse an OtherEvent object from a given JsonNode.
+     * @param node A event JsonNode object, where type
+     */
+    public OtherEvent parseOtherEvent(JsonNode node) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> fields = mapper.convertValue(node, new TypeReference<HashMap<String, Object>>(){});
+        try {
+            String debug = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fields);
+            System.out.println(debug);
         } catch (Exception e) {
             System.out.println("Nope");
             System.out.println(e);
         }
-		return new OtherEvent(fields);
+        return new OtherEvent(fields);
+    }
+
+    public BaseEvent parseSimpleEvent(JsonNode node, String roundAttribute,
+                                      Supplier<SimpleEvent> constructor) {
+        // Parse the round attribute from the JSON node
+        JsonNode value = node.path(roundAttribute);
+        if (!value.isInt()) {
+            return null;
+        }
+
+        // Create the event and set the round
+        SimpleEvent event = constructor.get();
+        event.setRound(value.asInt());
+        return event;
 	}
 
-	public BaseEvent parseFromSimpleEvent(JsonNode node, Function<Integer, BaseEvent> constructor) {
-		JsonNode value = node.path("sinceRound");
-		if (!value.isInt()) {
-			return null;
-		}
-		BaseEvent event = constructor.apply(value.asInt());
-		return event;
-	}
-
-	public PathogenEncounteredEvent parsePathogenEncounteredEvent(JsonNode node) {
-		// Parse the Pathogen
-		JsonNode value = node.path("pathogen").path("name");
-		if (value.isMissingNode()) {
-			return null;
-		}
-
-		Pathogen pathogen = this.pathogens.get(value.textValue());
-		if (pathogen == null) {
-			pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
-			if (pathogen == null) {
-				return null;
-			}
-			this.pathogens.put(pathogen.name, pathogen);
-		}
-
-		value = node.path("round");
-		if (!value.isInt()) {
-			return null;
-		}
-		return new PathogenEncounteredEvent(value.asInt(), pathogen);
-	}
-
-	public BioTerrorismEvent parseBioTerrorismEvent(JsonNode node) {
-		// Parse the Pathogen
-		JsonNode value = node.path("pathogen").path("name");
-		if (value.isMissingNode()) {
-			return null;
-		}
-
-		Pathogen pathogen = this.pathogens.get(value.textValue());
-		if (pathogen == null) {
-			pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
-			if (pathogen == null) {
-				return null;
-			}
-			this.pathogens.put(pathogen.name, pathogen);
-		}
-
-		value = node.path("round");
-		if (!value.isInt()) {
-			return null;
-		}
-		return new BioTerrorismEvent(pathogen, value.asInt());
-	}
-
-	public OutbreakEvent parseOutbreakEvent(JsonNode node) {
-		// Parse the Pathogen
-		JsonNode value = node.path("pathogen").path("name");
-		if (value.isMissingNode()) {
-			return null;
-		}
-		// Try to generate the Pathogen instance)
-		Pathogen pathogen = this.pathogens.get(value.textValue());
-		if (pathogen == null) {
-			pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
-			if (pathogen == null) {
-				return null;
-			}
-			this.pathogens.put(pathogen.name, pathogen);
-		}
-
-		// Parse sinceRound
-		value = node.path("sinceRound");
-		if (!value.isInt()) {
-			return null;
-		}
-		int sinceRound = value.asInt();
-
-		// Parse prevalence
-		value = node.path("prevalence");
-		if (!value.isDouble()) {
-			return null;
-		}
-		double prevalence = value.asDouble();
-		return new OutbreakEvent(pathogen, prevalence, sinceRound);
-	}
-
-    public BaseEvent parsePandemieEvent(JsonNode node, Supplier<PathogenEvent> constructor) {
+    public BaseEvent parsePathogenEvent(JsonNode node, String roundAttribute,
+                                        Supplier<PathogenEvent> constructor) {
         JsonNode value = node.path("pathogen").path("name");
         if (value.isMissingNode()) {
             return null;
         }
-        // Try to generate the Pathogen instance)
+
+        // Try to get the Pathogen instance or generate them
+        Pathogen pathogen = this.pathogens.get(value.textValue());
+        if (pathogen == null) {
+            pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
+            if (pathogen == null) {
+                return null;
+            }
+            this.pathogens.put(pathogen.name, pathogen);
+        }
+
+        // Parse round
+        value = node.path(roundAttribute);
+        if (!value.isInt()) {
+            return null;
+        }
+
+        // Create event
+        PathogenEvent event = constructor.get();
+        event.pathogen = pathogen;
+        event.setRound(value.asInt());
+        return event;
+    }
+
+    public BaseEvent parseTimedEvent(JsonNode node,
+                                     Supplier<TimedEvent> constructor) {
+        // Parse sinceRound
+        JsonNode value = node.path("sinceRound");
+        if (!value.isInt()) {
+            return null;
+        }
+        int sinceRound = value.asInt();
+
+        // Parse untilRound
+        value = node.path("untilRound");
+        if (!value.isInt()) {
+            return null;
+        }
+        int untilRound = value.asInt();
+
+        TimedEvent event = constructor.get();
+        event.untilRound = untilRound;
+        event.sinceRound = sinceRound;
+        return event;
+    }
+
+    public BaseEvent parseInDevelopmentEvent
+        (JsonNode node, Supplier<InDevelopmentEvent> constructor) {
+        JsonNode value = node.path("pathogen").path("name");
+        if (value.isMissingNode()) {
+            return null;
+        }
+        // Try to get the Pathogen instance or generate them
         Pathogen pathogen = this.pathogens.get(value.textValue());
         if (pathogen == null) {
             pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
@@ -200,100 +282,16 @@ public class EventFactory {
             return null;
         }
         int sinceRound = value.asInt();
-        PathogenEvent event = constructor.get();
 
+        // Parse untilRound
+        value = node.path("untilRound");
+        if (!value.isInt()) {
+            return null;
+        }
+        int untilRound = value.asInt();
+
+        InDevelopmentEvent event = (InDevelopmentEvent) constructor.get();
         event.pathogen = pathogen;
-        event.setRound(sinceRound);
-        return event;
-    }
-
-    public BaseEvent parseVaccineDeployedEvent(JsonNode node) {
-        JsonNode value = node.path("pathogen").path("name");
-        if (value.isMissingNode()) {
-            return null;
-        }
-        // Try to generate the Pathogen instance)
-        Pathogen pathogen = this.pathogens.get(value.textValue());
-        if (pathogen == null) {
-            pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
-            if (pathogen == null) {
-                return null;
-            }
-            this.pathogens.put(pathogen.name, pathogen);
-        }
-
-        // Parse sinceRound
-        value = node.path("round");
-        if (!value.isInt()) {
-            return null;
-        }
-        int round = value.asInt();
-        VaccineDeployedEvent event = new VaccineDeployedEvent(pathogen, round);
-        return event;
-    }
-
-    public BaseEvent parseMedicationDeployedEvent(JsonNode node) {
-        JsonNode value = node.path("pathogen").path("name");
-        if (value.isMissingNode()) {
-            return null;
-        }
-        // Try to generate the Pathogen instance)
-        Pathogen pathogen = this.pathogens.get(value.textValue());
-        if (pathogen == null) {
-            pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
-            if (pathogen == null) {
-                return null;
-            }
-            this.pathogens.put(pathogen.name, pathogen);
-        }
-
-        // Parse sinceRound
-        value = node.path("round");
-        if (!value.isInt()) {
-            return null;
-        }
-        int round = value.asInt();
-        MedicationDeployedEvent event = new MedicationDeployedEvent(pathogen, round);
-        return event;
-    }
-
-    public BaseEvent parseQuarantineEvent(JsonNode node) {
-        // Parse sinceRound
-        JsonNode value = node.path("sinceRound");
-        if (!value.isInt()) {
-            return null;
-        }
-        int sinceRound = value.asInt();
-
-        // Parse untilRound
-        value = node.path("untilRound");
-        if (!value.isInt()) {
-            return null;
-        }
-        int untilRound = value.asInt();
-
-        QuarantineEvent event = new QuarantineEvent();
-        event.untilRound = untilRound;
-        event.sinceRound = sinceRound;
-        return event;
-    }
-
-    public BaseEvent parseAirportClosedEvent(JsonNode node) {
-        // Parse sinceRound
-        JsonNode value = node.path("sinceRound");
-        if (!value.isInt()) {
-            return null;
-        }
-        int sinceRound = value.asInt();
-
-        // Parse untilRound
-        value = node.path("untilRound");
-        if (!value.isInt()) {
-            return null;
-        }
-        int untilRound = value.asInt();
-
-        AirportClosedEvent event = new AirportClosedEvent();
         event.untilRound = untilRound;
         event.sinceRound = sinceRound;
         return event;
@@ -304,10 +302,9 @@ public class EventFactory {
         if (value.isMissingNode()) {
             return null;
         }
-        // Try to generate the City instance)
+        // Try to get the City instance
         City city = this.cities.get(value.textValue());
         if (city == null) {
-            System.out.println("NEIN NEIN NEIN");
             return null;
         }
 
@@ -332,42 +329,6 @@ public class EventFactory {
         return event;
     }
 
-    public BaseEvent parseInDevelopmentEvent(JsonNode node, Supplier<InDevelopmentEvent> constructor) {
-        JsonNode value = node.path("pathogen").path("name");
-        if (value.isMissingNode()) {
-            return null;
-        }
-        // Try to generate the Pathogen instance)
-        Pathogen pathogen = this.pathogens.get(value.textValue());
-        if (pathogen == null) {
-            pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
-            if (pathogen == null) {
-                return null;
-            }
-            this.pathogens.put(pathogen.name, pathogen);
-        }
-
-        // Parse sinceRound
-        value = node.path("sinceRound");
-        if (!value.isInt()) {
-            return null;
-        }
-        int sinceRound = value.asInt();
-
-        // Parse untilRound
-        value = node.path("untilRound");
-        if (!value.isInt()) {
-            return null;
-        }
-        int untilRound = value.asInt();
-
-        InDevelopmentEvent event = constructor.get();
-        event.pathogen = pathogen;
-        event.untilRound = untilRound;
-        event.setRound(sinceRound);
-        return event;
-    }
-
     public BaseEvent parseUprisingEvent(JsonNode node) {
         // Parse sinceRound
         JsonNode value = node.path("sinceRound");
@@ -387,59 +348,33 @@ public class EventFactory {
         return event;
     }
 
-    public BaseEvent parseCampaignLaunchedEvent(JsonNode node) {
-        JsonNode value = node.path("city").path("name");
-
-        // Parse round
-        value = node.path("round");
+    public OutbreakEvent parseOutbreakEvent(JsonNode node) {
+        // Parse the Pathogen
+        JsonNode value = node.path("pathogen").path("name");
+        if (value.isMissingNode()) {
+            return null;
+        }
+        // Try to generate the Pathogen instance
+        Pathogen pathogen = this.pathogens.get(value.textValue());
+        if (pathogen == null) {
+            pathogen = Pathogen.fromJsonNode(node.get("pathogen"));
+            if (pathogen == null) {
+                return null;
+            }
+            this.pathogens.put(pathogen.name, pathogen);
+        }
+        // Parse sinceRound
+        value = node.path("sinceRound");
         if (!value.isInt()) {
             return null;
         }
-        int round = value.asInt();
-
-        CampaignLaunchedEvent event = new CampaignLaunchedEvent(round);
-        return event;
-    }
-
-    public BaseEvent parseElectionsCalledEvent(JsonNode node) {
-        JsonNode value = node.path("city").path("name");
-
-        // Parse round
-        value = node.path("round");
-        if (!value.isInt()) {
+        int sinceRound = value.asInt();
+        // Parse prevalence
+        value = node.path("prevalence");
+        if (!value.isDouble()) {
             return null;
         }
-        int round = value.asInt();
-
-        ElectionsCalledEvent event = new ElectionsCalledEvent(round);
-        return event;
-    }
-
-    public BaseEvent parseHygienicMeasuresAppliedEvent(JsonNode node) {
-        JsonNode value = node.path("city").path("name");
-
-        // Parse round
-        value = node.path("round");
-        if (!value.isInt()) {
-            return null;
-        }
-        int round = value.asInt();
-
-        HygienicMeasuresAppliedEvent event = new HygienicMeasuresAppliedEvent(round);
-        return event;
-    }
-
-    public BaseEvent parseInfluenceExertedEvent(JsonNode node) {
-        JsonNode value = node.path("city").path("name");
-
-        // Parse round
-        value = node.path("round");
-        if (!value.isInt()) {
-            return null;
-        }
-        int round = value.asInt();
-
-        InfluenceExertedEvent event = new InfluenceExertedEvent(round);
-        return event;
+        double prevalence = value.asDouble();
+        return new OutbreakEvent(pathogen, prevalence, sinceRound);
     }
 }

@@ -1,16 +1,18 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.City;
-import de.tubs.pandemieinc.events.BaseEvent;
+import de.tubs.pandemieinc.events.TimedEvent;
 
-public class QuarantineEvent extends BaseEvent  {
+public class QuarantineEvent extends TimedEvent {
 
-    public static String eventName = "quarantine";
-
-    public int sinceRound;
-    public int untilRound;
+    public static final String eventName = "quarantine";
 
     public QuarantineEvent() {
         super(eventName);
+    }
+
+    public QuarantineEvent(int sinceRound, int untilRound) {
+        super(eventName);
+        this.sinceRound = sinceRound;
+        this.untilRound = untilRound;
     }
 }

@@ -1,15 +1,13 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.Pathogen;
 import de.tubs.pandemieinc.events.BaseEvent;
 
-public abstract class InDevelopmentEvent extends BaseEvent {
+public abstract class TimedEvent extends BaseEvent {
 
     public int sinceRound;
     public int untilRound;
-    public Pathogen pathogen;
 
-    public InDevelopmentEvent(String eventName) {
+    public TimedEvent(String eventName) {
         super(eventName);
     }
 
@@ -19,9 +17,5 @@ public abstract class InDevelopmentEvent extends BaseEvent {
 
     public void setUntilRound(int round) {
         this.untilRound = round;
-    }
-
-    public void setPathogen(Pathogen pathogen) {
-        this.pathogen = pathogen;
     }
 }

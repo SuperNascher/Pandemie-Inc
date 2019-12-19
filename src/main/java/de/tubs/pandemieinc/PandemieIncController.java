@@ -40,7 +40,7 @@ import java.io.RandomAccessFile;
 @RestController
 public class PandemieIncController {
 
-    public int gameId = 2049;
+    public int gameId = 5939;
     public ObjectMapper mapper = new ObjectMapper();
     public ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
     public boolean activated = false;
@@ -63,114 +63,243 @@ public class PandemieIncController {
 
     @RequestMapping(value="/deadlyVacc", method=RequestMethod.POST, produces="application/json")
     public String deadlyVacc(@RequestBody Round round) {
-    
-        if (!round.outcome.equals("pending")) {
-            System.out.println("Game end: " + round.outcome);
-            return ActionPrinter.endRound();
+
+        String prePath = "/tmp/pandemieinc/";
+        String directoryName = prePath.concat(Integer.toString(this.gameId));
+        String action;
+
+        // Save the files
+
+        try {
+            // Create game directory if not exists
+            File directory = new File(directoryName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // Save the round.json
+            File roundFile = new File(directoryName + "/" + round.round + ".json");
+            if (!roundFile.exists()) {
+                roundFile.createNewFile();
+                this.writer.writeValue(roundFile, round);
+            }
+
+            if (round.outcome.equals("pending")) {
+                // Generate the action
+                VaccDeadlyFirstImplementation implement = new VaccDeadlyFirstImplementation(round);
+                action = implement.selectAction();
+
+                // Save round_response
+                String actionFileName = directoryName + "/" + round.round + "_action.json";
+                File roundActionFile = new File(actionFileName);
+                boolean fileExists = roundActionFile.exists();
+                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
+                if (fileExists) {
+                    long position = roundActionWriter.length();
+                    if (position > 0) {
+                        roundActionWriter.seek(position - 2);
+                    }
+                    String actionFile = ",\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                } else {
+                    String actionFile = "[\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                }
+                roundActionWriter.close();
+            } else {
+                if (round.outcome.equals("win")) {
+                    System.out.println("VaccDeadlyFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
+                }
+                this.gameId = this.gameId + 1;
+                action = ActionPrinter.endRound();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            action = ActionPrinter.endRound();
         }
-        
-        VaccDeadlyFirstImplementation implement = new VaccDeadlyFirstImplementation(round);
-        String action = implement.selectAction();
-        System.out.println("VaccDeadlyFirstImplementation: " + action);
+
+        // Return the action
         return action;
-    
     }
     
     @RequestMapping(value="/deadlyMed", method=RequestMethod.POST, produces="application/json")
     public String deadlyMed(@RequestBody Round round) {
-    
-        if (!round.outcome.equals("pending")) {
-            System.out.println("Game end: " + round.outcome);
-            return ActionPrinter.endRound();
+        String prePath = "/tmp/pandemieinc/";
+        String directoryName = prePath.concat(Integer.toString(this.gameId));
+        String action;
+
+        // Save the files
+
+        try {
+            // Create game directory if not exists
+            File directory = new File(directoryName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // Save the round.json
+            File roundFile = new File(directoryName + "/" + round.round + ".json");
+            if (!roundFile.exists()) {
+                roundFile.createNewFile();
+                this.writer.writeValue(roundFile, round);
+            }
+
+            if (round.outcome.equals("pending")) {
+                // Generate the action
+                MedDeadlyFirstImplementation implement = new MedDeadlyFirstImplementation(round);
+                action = implement.selectAction();
+
+                // Save round_response
+                String actionFileName = directoryName + "/" + round.round + "_action.json";
+                File roundActionFile = new File(actionFileName);
+                boolean fileExists = roundActionFile.exists();
+                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
+                if (fileExists) {
+                    long position = roundActionWriter.length();
+                    if (position > 0) {
+                        roundActionWriter.seek(position - 2);
+                    }
+                    String actionFile = ",\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                } else {
+                    String actionFile = "[\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                }
+                roundActionWriter.close();
+            } else {
+                if (round.outcome.equals("win")) {
+                    System.out.println("MedDeadlyFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
+                }
+                this.gameId = this.gameId + 1;
+                action = ActionPrinter.endRound();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            action = ActionPrinter.endRound();
         }
-        
-        MedDeadlyFirstImplementation implement = new MedDeadlyFirstImplementation(round);
-        String action = implement.selectAction();
-        System.out.println("MedDeadlyFirstImplementation: " + action);
+
+        // Return the action
         return action;
-    
     }
-    
+
     @RequestMapping(value="/fastVacc", method=RequestMethod.POST, produces="application/json")
     public String fastVacc(@RequestBody Round round) {
-    
-        if (!round.outcome.equals("pending")) {
-            System.out.println("Game end: " + round.outcome);
-            return ActionPrinter.endRound();
+        String prePath = "/tmp/pandemieinc/";
+        String directoryName = prePath.concat(Integer.toString(this.gameId));
+        String action;
+
+        // Save the files
+
+        try {
+            // Create game directory if not exists
+            File directory = new File(directoryName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // Save the round.json
+            File roundFile = new File(directoryName + "/" + round.round + ".json");
+            if (!roundFile.exists()) {
+                roundFile.createNewFile();
+                this.writer.writeValue(roundFile, round);
+            }
+
+            if (round.outcome.equals("pending")) {
+                // Generate the action
+                VaccFastFirstImplementation implement = new VaccFastFirstImplementation(round);
+                action = implement.selectAction();
+
+                // Save round_response
+                String actionFileName = directoryName + "/" + round.round + "_action.json";
+                File roundActionFile = new File(actionFileName);
+                boolean fileExists = roundActionFile.exists();
+                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
+                if (fileExists) {
+                    long position = roundActionWriter.length();
+                    if (position > 0) {
+                        roundActionWriter.seek(position - 2);
+                    }
+                    String actionFile = ",\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                } else {
+                    String actionFile = "[\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                }
+                roundActionWriter.close();
+            } else {
+                if (round.outcome.equals("win")) {
+                    System.out.println("VaccFastFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
+                }
+                this.gameId = this.gameId + 1;
+                action = ActionPrinter.endRound();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            action = ActionPrinter.endRound();
         }
-        
-        VaccFastFirstImplementation implement = new VaccFastFirstImplementation(round);
-        String action = implement.selectAction();
-        System.out.println("VaccFastFirstImplementation: " + action);
+
+        // Return the action
         return action;
-    
     }
-    
+
     @RequestMapping(value="/fastMed", method=RequestMethod.POST, produces="application/json")
     public String fastMed(@RequestBody Round round) {
-    
-        if (!round.outcome.equals("pending")) {
-            System.out.println("Game end: " + round.outcome);
-            return ActionPrinter.endRound();
+        String prePath = "/tmp/pandemieinc/";
+        String directoryName = prePath.concat(Integer.toString(this.gameId));
+        String action;
+
+        // Save the files
+
+        try {
+            // Create game directory if not exists
+            File directory = new File(directoryName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // Save the round.json
+            File roundFile = new File(directoryName + "/" + round.round + ".json");
+            if (!roundFile.exists()) {
+                roundFile.createNewFile();
+                this.writer.writeValue(roundFile, round);
+            }
+
+            if (round.outcome.equals("pending")) {
+                // Generate the action
+                MedFastFirstImplementation implement = new MedFastFirstImplementation(round);
+                action = implement.selectAction();
+
+                // Save round_response
+                String actionFileName = directoryName + "/" + round.round + "_action.json";
+                File roundActionFile = new File(actionFileName);
+                boolean fileExists = roundActionFile.exists();
+                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
+                if (fileExists) {
+                    long position = roundActionWriter.length();
+                    if (position > 0) {
+                        roundActionWriter.seek(position - 2);
+                    }
+                    String actionFile = ",\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                } else {
+                    String actionFile = "[\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                }
+                roundActionWriter.close();
+            } else {
+                if (round.outcome.equals("win")) {
+                    System.out.println("MedFastFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
+                }
+                this.gameId = this.gameId + 1;
+                action = ActionPrinter.endRound();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            action = ActionPrinter.endRound();
         }
-        
-        MedFastFirstImplementation implement = new MedFastFirstImplementation(round);
-        String action = implement.selectAction();
-        System.out.println("MedFastFirstImplementation: " + action);
+
+        // Return the action
         return action;
-    
-    }
-    
-    @RequestMapping(value="/slowVacc", method=RequestMethod.POST, produces="application/json")
-    public String slowVacc(@RequestBody Round round) {
-    
-        if (!round.outcome.equals("pending")) {
-            System.out.println("Game end: " + round.outcome);
-            return ActionPrinter.endRound();
-        }
-        
-        VaccSlowFirstImplementation implement = new VaccSlowFirstImplementation(round);
-        String action = implement.selectAction();
-        System.out.println("VaccSlowFirstImplementation: " + action);
-        return action;
-    
-    }
-    
-    @RequestMapping(value="/slowMed", method=RequestMethod.POST, produces="application/json")
-    public String slowMed(@RequestBody Round round) {
-    
-        if (!round.outcome.equals("pending")) {
-            System.out.println("Game end: " + round.outcome);
-            return ActionPrinter.endRound();
-        }
-        
-        MedSlowFirstImplementation implement = new MedSlowFirstImplementation(round);
-        String action = implement.selectAction();
-        System.out.println("MedSlowFirstImplementation: " + action);
-        return action;
-    
-    }
-    @RequestMapping(value="/test", method=RequestMethod.POST, produces="application/json")
-    public String testQuarantine(@RequestBody Round round) {
-
-
-        // Return endRound, if game is not pending
-        if (!round.outcome.equals("pending")) {
-            return ActionPrinter.endRound();
-        }
-
-        /*
-        try{
-            System.out.println(this.writer.writeValueAsString(round));
-        } catch (Exception e) {}
-        */
-
-        if (this.activated == false) {
-            this.activated = true;
-            City city = (City) round.cities.values().toArray()[0];
-            return ActionPrinter.putUnderQuarantine(city, 2);
-        }
-        return ActionPrinter.endRound();
     }
 
     @RequestMapping(value="/logging", method=RequestMethod.POST, produces="application/json")
