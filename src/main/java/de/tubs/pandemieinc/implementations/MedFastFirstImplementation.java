@@ -177,12 +177,12 @@ public class MedFastFirstImplementation {
 	            continue;
 	        }
 	        if (spreadRating == 10) {
-	            spreadRating = duration - infectivity;
+	            spreadRating = duration/2 - infectivity;
 	            fastPath = temp;
 	            
 	        } else {
-	            if (spreadRating > duration - infectivity ) {
-	                spreadRating = duration - infectivity;
+	            if (spreadRating > duration/2 - infectivity ) {
+	                spreadRating = duration/2 - infectivity;
 	                fastPath = temp;
 	            }	                
 	        }   
@@ -205,12 +205,12 @@ public class MedFastFirstImplementation {
 	            continue;
 	        }
 	        if (spreadRating == 10) {
-	            spreadRating = duration - infectivity;
+	            spreadRating = duration/2 - infectivity;
 	            slowPath = temp;
 	            
 	        } else {
-	            if (spreadRating < duration - infectivity ) {
-	                spreadRating = duration - infectivity;
+	            if (spreadRating < duration/2 - infectivity ) {
+	                spreadRating = duration/2 - infectivity;
 	                slowPath = temp;
 	            }	                
 	        }   

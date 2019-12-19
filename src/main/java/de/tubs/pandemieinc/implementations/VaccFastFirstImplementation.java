@@ -209,12 +209,12 @@ public class VaccFastFirstImplementation {
 	            continue;
 	        }
 	        if (spreadRating == 10) {
-	            spreadRating = duration - infectivity;
+	            spreadRating = duration/2 - infectivity;
 	            fastPath = temp;
 	            
 	        } else {
-	            if (spreadRating > duration - infectivity ) {
-	                spreadRating = duration - infectivity;
+	            if (spreadRating > duration/2 - infectivity ) {
+	                spreadRating = duration/2 - infectivity;
 	                fastPath = temp;
 	            }	                
 	        }   

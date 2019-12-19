@@ -209,12 +209,12 @@ public class VaccSlowFirstImplementation {
 	            continue;
 	        }
 	        if (spreadRating == 10) {
-	            spreadRating = duration - infectivity;
+	            spreadRating = duration/2 - infectivity;
 	            slowPath = temp;
 	            
 	        } else {
-	            if (spreadRating < duration - infectivity ) {
-	                spreadRating = duration - infectivity;
+	            if (spreadRating < duration/2 - infectivity ) {
+	                spreadRating = duration/2 - infectivity;
 	                slowPath = temp;
 	            }	                
 	        }   
@@ -237,12 +237,12 @@ public class VaccSlowFirstImplementation {
 	            continue;
 	        }
 	        if(spreadRating == 10) {
-	            spreadRating = duration - infectivity;
+	            spreadRating = duration/2 - infectivity;
 	            slowPath = temp;
 	            
 	        } else {
-	            if (spreadRating < duration - infectivity ) {
-	                spreadRating = duration - infectivity;
+	            if (spreadRating < duration/2 - infectivity ) {
+	                spreadRating = duration/2 - infectivity;
 	                slowPath = temp;
 	            }	                
 	        }  

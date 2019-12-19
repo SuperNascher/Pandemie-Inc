@@ -177,12 +177,12 @@ public class MedSlowFirstImplementation {
 	            continue;
 	        }
 	        if (spreadRating == 10) {
-	            spreadRating = duration - infectivity;
+	            spreadRating = duration/2 - infectivity;
 	            slowPath = temp;
 	            
 	        } else {
-	            if (spreadRating < duration - infectivity ) {
-	                spreadRating = duration - infectivity;
+	            if (spreadRating < duration/2 - infectivity ) {
+	                spreadRating = duration/2 - infectivity;
 	                slowPath = temp;
 	            }	                
 	        }   
@@ -192,7 +192,7 @@ public class MedSlowFirstImplementation {
     
     }
     
-    public Pathogen getSlowPathogen(List<Pathogen> pathogen) {
+    public Pathogen getSlowPathogen(List<Pathogen> pathogen) { 
     
 	    float spreadRating = 10;
 	    Pathogen slowPath = null;
@@ -205,12 +205,12 @@ public class MedSlowFirstImplementation {
 	            continue;
 	        }
 	        if (spreadRating == 10) {
-	            spreadRating = duration - infectivity;
+	            spreadRating = duration/2 - infectivity;
 	            slowPath = temp;
 	            
 	        } else {
-	            if (spreadRating < duration - infectivity ) {
-	                spreadRating = duration - infectivity;
+	            if (spreadRating < duration/2 - infectivity ) {
+	                spreadRating = duration/2 - infectivity;
 	                slowPath = temp;
 	            }	                
 	        }   
