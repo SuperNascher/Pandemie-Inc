@@ -8,13 +8,14 @@ import de.tubs.pandemieinc.City;
 import de.tubs.pandemieinc.Pathogen;
 import de.tubs.pandemieinc.events.*;
 import de.tubs.pandemieinc.Strength;
+import de.tubs.pandemieinc.implementations.PandemieImplementation;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.function.Supplier;
 
-public class VaccFastFirstImplementation {
+public class VaccFastFirstImplementation implements PandemieImplementation {
 
     public Round round;
     final int quarantineRoundlength = 2; //ändern wenn fastestFirst

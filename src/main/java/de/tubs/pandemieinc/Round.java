@@ -1,8 +1,8 @@
 package de.tubs.pandemieinc;
 
 import de.tubs.pandemieinc.City;
+import de.tubs.pandemieinc.EventFactory;
 import de.tubs.pandemieinc.events.BaseEvent;
-import de.tubs.pandemieinc.events.EventFactory;
 
 import java.util.ArrayList;
 import java.util.List;

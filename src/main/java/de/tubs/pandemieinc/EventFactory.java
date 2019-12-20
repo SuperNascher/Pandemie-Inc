@@ -1,4 +1,4 @@
-package de.tubs.pandemieinc.events;
+package de.tubs.pandemieinc;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -14,6 +14,7 @@ import de.tubs.pandemieinc.events.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 /**
  * A Factory class to create the event classes from the JSON (JsonNode).
@@ -157,8 +158,8 @@ public class EventFactory {
 
     /**
      * Parse the event from a JsonNode object.
-     * @param node A event JsonNode object
-     * @return The event object or null, if an error occurred
+     * @param node A JsonNode object, where the values should be parseable.
+     * @return The parsed event as object or null, if an error occurred
      */
     public BaseEvent parseFromJsonNode(JsonNode node) {
         // Parse the event type
@@ -179,21 +180,23 @@ public class EventFactory {
 
     /**
      * Parse an OtherEvent object from a given JsonNode.
-     * @param node A event JsonNode object, where type
+     * @param node A JsonNode object, where the values should be parseable.
+     * @return a OtherEvent object with the parsed attributes or null on error.
      */
     public OtherEvent parseOtherEvent(JsonNode node) {
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> fields = mapper.convertValue(node, new TypeReference<HashMap<String, Object>>(){});
-        try {
-            String debug = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fields);
-            System.out.println(debug);
-        } catch (Exception e) {
-            System.out.println("Nope");
-            System.out.println(e);
-        }
+        Map<String, Object> fields = mapper
+            .convertValue(node, new TypeReference<HashMap<String, Object>>(){});
         return new OtherEvent(fields);
     }
 
+    /**
+     * Parse an SimpleEvent object from a given JsonNode.
+     * @param node A JsonNode object, where the values should be parseable.
+     * @param roundAttribute The name of the round attribute (e.g. sinceRound)
+     * @param constructor The class instructor for the SimpleEvent object.
+     * @return a SimpleEvent object with the parsed attributes or null on error.
+     */
     public BaseEvent parseSimpleEvent(JsonNode node, String roundAttribute,
                                       Supplier<SimpleEvent> constructor) {
         // Parse the round attribute from the JSON node
@@ -208,6 +211,13 @@ public class EventFactory {
         return event;
 	}
 
+    /**
+     * Parse a PathogenEvent object from a given JsonNode.
+     * @param node A JsonNode object, where the values should be parseable.
+     * @param roundAttribute The name of the round attribute (e.g. sinceRound)
+     * @param constructor The class instructor for the PathogenEvent object.
+     * @return a SimpleEvent object with the parsed attributes or null on error.
+     */
     public BaseEvent parsePathogenEvent(JsonNode node, String roundAttribute,
                                         Supplier<PathogenEvent> constructor) {
         JsonNode value = node.path("pathogen").path("name");
@@ -238,6 +248,12 @@ public class EventFactory {
         return event;
     }
 
+    /**
+     * Parse a TimedEvent object from a given JsonNode.
+     * @param node A JsonNode object, where the values should be parseable.
+     * @param constructor The class instructor for the TimedEvent object.
+     * @return a TimedEvent object with the parsed attributes or null on error.
+     */
     public BaseEvent parseTimedEvent(JsonNode node,
                                      Supplier<TimedEvent> constructor) {
         // Parse sinceRound
@@ -260,6 +276,13 @@ public class EventFactory {
         return event;
     }
 
+    /**
+     * Parse a InDevelopmentEvent object from a given JsonNode.
+     * @param node A JsonNode object, where the values should be parseable.
+     * @param constructor The class instructor for the PathogenEvent object.
+     * @return a InDevelopmentEvent object with the parsed attributes
+     *         or null on error.
+     */
     public BaseEvent parseInDevelopmentEvent
         (JsonNode node, Supplier<InDevelopmentEvent> constructor) {
         JsonNode value = node.path("pathogen").path("name");
@@ -297,6 +320,12 @@ public class EventFactory {
         return event;
     }
 
+    /**
+     * Parse a ConnectionClosedEvent object from a given JsonNode.
+     * @param node A JsonNode object, where the values should be parseable.
+     * @return a ConnectionClosedEvent object with the parsed attributes
+     *         or null on error.
+     */
     public BaseEvent parseConnectionClosedEvent(JsonNode node) {
         JsonNode value = node.get("city");
         if (value.isMissingNode()) {
@@ -329,7 +358,13 @@ public class EventFactory {
         return event;
     }
 
-    public BaseEvent parseUprisingEvent(JsonNode node) {
+    /**
+     * Parse a UprisingEvent object from a given JsonNode.
+     * @param node A JsonNode object, where the values should be parseable.
+     * @return a UprisingEvent object with the parsed attributes
+     *         or null on error.
+     */
+    public UprisingEvent parseUprisingEvent(JsonNode node) {
         // Parse sinceRound
         JsonNode value = node.path("sinceRound");
         if (!value.isInt()) {
@@ -348,6 +383,12 @@ public class EventFactory {
         return event;
     }
 
+    /**
+     * Parse a OutbreakEvent object from a given JsonNode.
+     * @param node A JsonNode object, where the values should be parseable.
+     * @return a OutbreakEvent object with the parsed attributes
+     *         or null on error.
+     */
     public OutbreakEvent parseOutbreakEvent(JsonNode node) {
         // Parse the Pathogen
         JsonNode value = node.path("pathogen").path("name");

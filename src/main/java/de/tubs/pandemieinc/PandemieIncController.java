@@ -40,7 +40,7 @@ import java.io.RandomAccessFile;
 @RestController
 public class PandemieIncController {
 
-    public int gameId = 5939;
+    public int gameId = 11058;
     public ObjectMapper mapper = new ObjectMapper();
     public ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
     public boolean activated = false;
@@ -52,6 +52,9 @@ public class PandemieIncController {
 
         // Return endRound, if game is not pending
         if (!round.outcome.equals("pending")) {
+            if(round.outcome.equals("win"))
+                System.out.println("Bogo Wins: " + Integer.toString(this.gameId));
+
             return ActionPrinter.endRound();
         }
 
@@ -107,9 +110,6 @@ public class PandemieIncController {
                 }
                 roundActionWriter.close();
             } else {
-                if (round.outcome.equals("win")) {
-                    System.out.println("VaccDeadlyFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
-                }
                 this.gameId = this.gameId + 1;
                 action = ActionPrinter.endRound();
             }
@@ -121,7 +121,7 @@ public class PandemieIncController {
         // Return the action
         return action;
     }
-    
+
     @RequestMapping(value="/deadlyMed", method=RequestMethod.POST, produces="application/json")
     public String deadlyMed(@RequestBody Round round) {
         String prePath = "/tmp/pandemieinc/";
@@ -167,9 +167,6 @@ public class PandemieIncController {
                 }
                 roundActionWriter.close();
             } else {
-                if (round.outcome.equals("win")) {
-                    System.out.println("MedDeadlyFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
-                }
                 this.gameId = this.gameId + 1;
                 action = ActionPrinter.endRound();
             }
@@ -227,9 +224,6 @@ public class PandemieIncController {
                 }
                 roundActionWriter.close();
             } else {
-                if (round.outcome.equals("win")) {
-                    System.out.println("VaccFastFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
-                }
                 this.gameId = this.gameId + 1;
                 action = ActionPrinter.endRound();
             }
@@ -287,9 +281,122 @@ public class PandemieIncController {
                 }
                 roundActionWriter.close();
             } else {
-                if (round.outcome.equals("win")) {
-                    System.out.println("MedFastFirstImplementation Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
+                this.gameId = this.gameId + 1;
+                action = ActionPrinter.endRound();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            action = ActionPrinter.endRound();
+        }
+
+        // Return the action
+        return action;
+    }
+
+    @RequestMapping(value="/slowVacc", method=RequestMethod.POST, produces="application/json")
+    public String slowVacc(@RequestBody Round round) {
+
+        String prePath = "/tmp/pandemieinc/";
+        String directoryName = prePath.concat(Integer.toString(this.gameId));
+        String action;
+
+        // Save the files
+
+        try {
+            // Create game directory if not exists
+            File directory = new File(directoryName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // Save the round.json
+            File roundFile = new File(directoryName + "/" + round.round + ".json");
+            if (!roundFile.exists()) {
+                roundFile.createNewFile();
+                this.writer.writeValue(roundFile, round);
+            }
+
+            if (round.outcome.equals("pending")) {
+                // Generate the action
+                VaccSlowFirstImplementation implement = new VaccSlowFirstImplementation(round);
+                action = implement.selectAction();
+
+                // Save round_response
+                String actionFileName = directoryName + "/" + round.round + "_action.json";
+                File roundActionFile = new File(actionFileName);
+                boolean fileExists = roundActionFile.exists();
+                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
+                if (fileExists) {
+                    long position = roundActionWriter.length();
+                    if (position > 0) {
+                        roundActionWriter.seek(position - 2);
+                    }
+                    String actionFile = ",\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                } else {
+                    String actionFile = "[\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
                 }
+                roundActionWriter.close();
+            } else {
+                this.gameId = this.gameId + 1;
+                action = ActionPrinter.endRound();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            action = ActionPrinter.endRound();
+        }
+
+        // Return the action
+        return action;
+    }
+
+    @RequestMapping(value="/slowMed", method=RequestMethod.POST, produces="application/json")
+    public String slowMed(@RequestBody Round round) {
+
+        String prePath = "/tmp/pandemieinc/";
+        String directoryName = prePath.concat(Integer.toString(this.gameId));
+        String action;
+
+        // Save the files
+
+        try {
+            // Create game directory if not exists
+            File directory = new File(directoryName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // Save the round.json
+            File roundFile = new File(directoryName + "/" + round.round + ".json");
+            if (!roundFile.exists()) {
+                roundFile.createNewFile();
+                this.writer.writeValue(roundFile, round);
+            }
+
+            if (round.outcome.equals("pending")) {
+                // Generate the action
+                MedSlowFirstImplementation implement = new MedSlowFirstImplementation(round);
+                action = implement.selectAction();
+
+                // Save round_response
+                String actionFileName = directoryName + "/" + round.round + "_action.json";
+                File roundActionFile = new File(actionFileName);
+                boolean fileExists = roundActionFile.exists();
+                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
+                if (fileExists) {
+                    long position = roundActionWriter.length();
+                    if (position > 0) {
+                        roundActionWriter.seek(position - 2);
+                    }
+                    String actionFile = ",\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                } else {
+                    String actionFile = "[\n" + action + "\n]";
+                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
+                }
+                roundActionWriter.close();
+            } else {
                 this.gameId = this.gameId + 1;
                 action = ActionPrinter.endRound();
             }
@@ -307,6 +414,10 @@ public class PandemieIncController {
         String prePath = "/tmp/pandemieinc/";
         String directoryName = prePath.concat(Integer.toString(this.gameId));
         String action;
+
+        if(round.outcome.equals("win"))
+            System.out.println("Bogo Wins: " + Integer.toString(this.gameId));
+
 
         // Save the files
 
@@ -347,9 +458,6 @@ public class PandemieIncController {
                 }
                 roundActionWriter.close();
             } else {
-                if (round.outcome.equals("win")) {
-                    System.out.println("BogoSort Game: " +  Integer.toString(this.gameId) + ", Round: " + Integer.toString(round.round));
-                }
                 this.gameId = this.gameId + 1;
                 action = ActionPrinter.endRound();
             }

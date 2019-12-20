@@ -6,6 +6,7 @@ import de.tubs.pandemieinc.Action;
 import de.tubs.pandemieinc.ActionPrinter;
 import de.tubs.pandemieinc.City;
 import de.tubs.pandemieinc.Pathogen;
+import de.tubs.pandemieinc.implementations.PandemieImplementation;
 import de.tubs.pandemieinc.events.*;
 
 import java.util.Random;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.function.Supplier;
 
-public class BogoImplementation {
+public class BogoImplementation implements PandemieImplementation {
 
     public Round round;
     public Map<Action, Supplier<String>> actionMapping;
