@@ -18,7 +18,8 @@ import java.util.function.Supplier;
 public class VaccFastFirstImplementation implements PandemieImplementation {
 
     public Round round;
-    final int quarantineRoundlength = 2; //ändern wenn fastestFirst
+    final int quarantineRoundlength1 = 1; 
+    final int quarantineRoundlength2 = 2; 
 
     public VaccFastFirstImplementation(Round round) {
         this.round = round;
@@ -59,16 +60,16 @@ public class VaccFastFirstImplementation implements PandemieImplementation {
                 }
                 if(pathCity != null) {
                     if(this.round.round == 1) {                                    
-                        this.round.points -= (Action.PUTUNDERQUARANTINE.baseCost + quarantineRoundlength*Action.PUTUNDERQUARANTINE.roundCost);                    
-	                    return  ActionPrinter.putUnderQuarantine(pathCity, quarantineRoundlength);                  
+                        this.round.points -= (Action.PUTUNDERQUARANTINE.baseCost + quarantineRoundlength1*Action.PUTUNDERQUARANTINE.roundCost);                    
+	                    return  ActionPrinter.putUnderQuarantine(pathCity, quarantineRoundlength1);                  
                     } else {
                         List<BaseEvent> events = pathCity.events;
                         for(BaseEvent tempE : events) {                    
                             if (tempE.getClass().getSimpleName().equals("OutbreakEvent")) {
                                 OutbreakEvent outEvent = (OutbreakEvent) tempE;
                                 if (outEvent.sinceRound != 1) {
-                                    this.round.points -= (Action.PUTUNDERQUARANTINE.baseCost + quarantineRoundlength*Action.PUTUNDERQUARANTINE.roundCost);                    
-	                                return  ActionPrinter.putUnderQuarantine(pathCity, quarantineRoundlength);
+                                    this.round.points -= (Action.PUTUNDERQUARANTINE.baseCost + quarantineRoundlength2*Action.PUTUNDERQUARANTINE.roundCost);                    
+	                                return  ActionPrinter.putUnderQuarantine(pathCity, quarantineRoundlength2);
                                 }
                             }
                         }                   
@@ -210,12 +211,12 @@ public class VaccFastFirstImplementation implements PandemieImplementation {
 	            continue;
 	        }
 	        if (spreadRating == 10) {
-	            spreadRating = duration/2 - infectivity;
+	            spreadRating = duration - infectivity;
 	            fastPath = temp;
 	            
 	        } else {
-	            if (spreadRating > duration/2 - infectivity ) {
-	                spreadRating = duration/2 - infectivity;
+	            if (spreadRating > duration - infectivity ) {
+	                spreadRating = duration - infectivity;
 	                fastPath = temp;
 	            }	                
 	        }   
