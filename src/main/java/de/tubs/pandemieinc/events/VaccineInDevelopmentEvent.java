@@ -1,8 +1,12 @@
 package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.events.InDevelopmentEvent;
 
+/**
+ * VaccineInDevelopmentEvent - A global event
+ * This event indicates that the vaccine for the given
+ * Pathogen is in development.
+ */
 public class VaccineInDevelopmentEvent extends InDevelopmentEvent {
 
     public static final String eventName = "vaccineInDevelopment";

@@ -1,18 +1,17 @@
 package de.tubs.pandemieinc;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import java.util.Map;
-import java.util.HashMap;
-
-import de.tubs.pandemieinc.events.VaccineAvailableEvent;
 import de.tubs.pandemieinc.events.MedicationAvailableEvent;
+import de.tubs.pandemieinc.events.VaccineAvailableEvent;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+* Possible Actions mapped in an enum.
+* Contains the base and round cost and the JSON interpretation string.
+*/
 public enum Action {
-
     ENDROUND("endRound", 0, 0),
-    PUTUNDERQUARANTINE("putUnderQuarantine", 20,10),
+    PUTUNDERQUARANTINE("putUnderQuarantine", 20, 10),
     CLOSEAIRPORT("closeAirport", 15, 5),
     CLOSECONNECTION("closeConnection", 3, 3),
     DEVELOPVACCINE("developVaccine", 40, 0),
@@ -34,6 +33,12 @@ public enum Action {
         this.roundCost = roundCost;
     }
 
+    /**
+    * Get all actions, that does not have a dependency to an event.
+    *
+    * @return Action array with all possible actions, that does not have
+    *   any required event.
+    */
     public static Action[] nonDependentActions() {
         Action[] actions = {
             Action.APPLYHYGIENICMEASURES,
@@ -50,6 +55,12 @@ public enum Action {
         return actions;
     }
 
+    /**
+    * Get all actions, that have a event dependency.
+    *
+    * @return A Map, where the key is the required event name (as JSON String)
+    *   and the value is the Action enum.
+    */
     public static Map<String, Action> dependentActions() {
         Map<String, Action> actions = new HashMap<String, Action>();
         actions.put(VaccineAvailableEvent.eventName, DEPLOYVACCINE);

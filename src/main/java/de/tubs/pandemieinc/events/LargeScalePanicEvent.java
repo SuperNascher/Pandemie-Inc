@@ -1,8 +1,6 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.SimpleEvent;
-
-public class LargeScalePanicEvent extends SimpleEvent  {
+public class LargeScalePanicEvent extends SimpleEvent {
 
     public static final String eventName = "largeScalePanic";
     public int sinceRound;

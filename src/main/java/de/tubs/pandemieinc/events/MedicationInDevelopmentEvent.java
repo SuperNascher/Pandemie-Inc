@@ -1,8 +1,12 @@
 package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.events.InDevelopmentEvent;
 
+/**
+ * MedicationInDevelopmentEvent - An global event
+ * This event indicates that the medication for the given pathogen
+ * is indevelopment.
+ */
 public class MedicationInDevelopmentEvent extends InDevelopmentEvent {
 
     public static final String eventName = "medicationInDevelopment";

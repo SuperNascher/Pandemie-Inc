@@ -1,9 +1,13 @@
 package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.events.PathogenEvent;
 
-public class MedicationAvailableEvent extends PathogenEvent  {
+/**
+ * MedicationAvailableEvent - An global event
+ * This event indicates that the medication for the given pathogen
+ * is available to use for the cities.
+ */
+public class MedicationAvailableEvent extends PathogenEvent {
 
     public static String eventName = "medicationAvailable";
 

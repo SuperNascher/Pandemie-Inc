@@ -1,8 +1,6 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.SimpleEvent;
-
-public class AntiVaccinationismEvent extends SimpleEvent  {
+public class AntiVaccinationismEvent extends SimpleEvent {
 
     public static final String eventName = "antiVaccinationism";
     public int sinceRound;

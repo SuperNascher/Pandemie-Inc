@@ -1,8 +1,11 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.SimpleEvent;
-
-public class HygienicMeasuresAppliedEvent extends SimpleEvent  {
+/**
+ * HygienicMeasuresAppliedEvent - A city event
+ * This event indicates that the action "applyHygienicMeasures" was used on the
+ * given city.
+ */
+public class HygienicMeasuresAppliedEvent extends SimpleEvent {
 
     public static final String eventName = "hygienicMeasuresApplied";
     public int round;

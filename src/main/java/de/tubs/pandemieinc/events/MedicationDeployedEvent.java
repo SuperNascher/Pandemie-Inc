@@ -1,9 +1,13 @@
 package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.events.PathogenEvent;
 
-public class MedicationDeployedEvent extends PathogenEvent  {
+/**
+ * MedicationDeployedEvent - An city event
+ * This event indicates that the medication for the given pathogen
+ * was deployed on the given city.
+ */
+public class MedicationDeployedEvent extends PathogenEvent {
 
     public static String eventName = "medicationDeployed";
 

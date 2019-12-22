@@ -1,8 +1,6 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.BaseEvent;
-
-public class UprisingEvent extends BaseEvent  {
+public class UprisingEvent extends BaseEvent {
 
     public static String eventName = "uprising";
 

@@ -1,8 +1,6 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.SimpleEvent;
-
-public class EconomicCrisisEvent extends SimpleEvent  {
+public class EconomicCrisisEvent extends SimpleEvent {
 
     public static final String eventName = "economicCrisis";
     public int sinceRound;

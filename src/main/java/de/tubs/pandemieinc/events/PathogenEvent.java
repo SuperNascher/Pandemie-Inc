@@ -2,6 +2,9 @@ package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
 
+/**
+* Base class for events with Pathogen.
+*/
 public abstract class PathogenEvent extends BaseEvent {
 
     public Pathogen pathogen;

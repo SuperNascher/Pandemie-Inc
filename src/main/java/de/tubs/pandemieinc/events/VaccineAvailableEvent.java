@@ -1,9 +1,13 @@
 package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.events.PathogenEvent;
 
-public class VaccineAvailableEvent extends PathogenEvent  {
+/**
+ * VaccineAvailableEvent - A global event
+ * This event indicates that the vaccine for the given
+ * Pathogen is available for all cities.
+ */
+public class VaccineAvailableEvent extends PathogenEvent {
 
     public static String eventName = "vaccineAvailable";
 

@@ -1,10 +1,10 @@
 package de.tubs.pandemieinc;
 
-import de.tubs.pandemieinc.Strength;
-
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+* Pathogen class to represent a Pathogen from the given "JSON round".
+*/
 public class Pathogen {
     public final String name;
     public final Strength infectivity;
@@ -12,7 +12,12 @@ public class Pathogen {
     public final Strength duration;
     public final Strength lethality;
 
-    Pathogen(String name, Strength infectivity, Strength mobility, Strength duration, Strength lethality) {
+    Pathogen(
+            String name,
+            Strength infectivity,
+            Strength mobility,
+            Strength duration,
+            Strength lethality) {
         this.name = name;
         this.infectivity = infectivity;
         this.mobility = mobility;
@@ -28,6 +33,12 @@ public class Pathogen {
         this.lethality = Strength.fromString(lethality);
     }
 
+    /**
+    * Parse a Pathogen from the given JsonNode.
+    *
+    * @param node The JsonNode that contains the "parsed" pathogen.
+    * @return The parsed Pathogen instance or null on errors.
+    */
     public static Pathogen fromJsonNode(JsonNode node) {
         String[] attributes = {"name", "infectivity", "mobility", "duration", "lethality"};
         String[] values = new String[5];
@@ -45,6 +56,9 @@ public class Pathogen {
         return new Pathogen(values[0], values[1], values[2], values[3], values[4]);
     }
 
+    /**
+    * Modify toString() method to return the name of the given Pathogen.
+    */
     @Override
     public String toString() {
         return String.format("Pathogen (%s)", this.name);

@@ -1,9 +1,14 @@
 package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.events.PathogenEvent;
 
-public class BioTerrorismEvent extends PathogenEvent  {
+/**
+ * BioTerrorismEvent - Global event
+ *
+ * This event indicates that a new Pathogen is introduced
+ * as biological weapon.
+ */
+public class BioTerrorismEvent extends PathogenEvent {
 
     public static final String eventName = "bioTerrorism";
     public int round;

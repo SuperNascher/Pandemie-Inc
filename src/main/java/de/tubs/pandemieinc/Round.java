@@ -1,33 +1,24 @@
 package de.tubs.pandemieinc;
 
-import de.tubs.pandemieinc.City;
-import de.tubs.pandemieinc.EventFactory;
-import de.tubs.pandemieinc.events.BaseEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.lang.reflect.Field;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import de.tubs.pandemieinc.events.BaseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.io.File;
-import java.io.PrintWriter;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@JsonDeserialize(using=RoundDeserializer.class)
+/**
+* Pathogen class to represent the "JSON round" structure.
+*/
+@JsonDeserialize(using = RoundDeserializer.class)
 public class Round {
 
     // Fields that are required
@@ -39,15 +30,25 @@ public class Round {
     public String error = "";
 
     // Optional fields
-    @JsonIgnore
-    public Map<String, Pathogen> pathogens;
+    @JsonIgnore public Map<String, Pathogen> pathogens;
 }
 
+/**
+* Deserializer class for Round.
+*/
 class RoundDeserializer extends JsonDeserializer<Round> {
 
+    /**
+    * Custom parser for round class.
+    *
+    * @param jsonParser The given parser instance from jackson with the
+    *   parsed JSON (round object).
+    * @param deserializationContext The context with addional settings or reuseable objects.
+    * @return The parsed round instance.
+    */
     @Override
     public Round deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-        throws IOException, JsonProcessingException {
+            throws IOException, JsonProcessingException {
         JsonNode tree = jsonParser.getCodec().readTree(jsonParser);
         Map<String, JsonNode> cityLocations = new HashMap<String, JsonNode>();
         Map<String, JsonNode> cityEvents = new HashMap<String, JsonNode>();
@@ -96,20 +97,12 @@ class RoundDeserializer extends JsonDeserializer<Round> {
             for (JsonNode eventNode : cityEventsEntry.getValue()) {
                 BaseEvent event = eventFactory.parseFromJsonNode(eventNode);
                 if (event == null) {
-                    // TODO: Break serialization
-                    System.out.println("Warning: None in CityEvent (" + city.name + ")");
-                    System.out.println(eventNode.get("type").textValue());
-                    try {
-                        ObjectMapper mapper = new ObjectMapper();
-                        String debug = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(eventNode);
-                        System.out.println(debug);
-                    } catch (Exception e) {}
-                    continue;
+                    throw new JsonParseException(jsonParser,
+                        "Could not parse given event object.");
                 }
                 city.events.add(event);
             }
         }
-
 
         // Apply the city connections
         for (Map.Entry<String, JsonNode> cityLocation : cityLocations.entrySet()) {
@@ -120,16 +113,14 @@ class RoundDeserializer extends JsonDeserializer<Round> {
             }
         }
 
-
         // Events parsing
         round.events = new ArrayList<BaseEvent>();
         for (JsonNode eventNode : tree.get("events")) {
             BaseEvent event = eventFactory.parseFromJsonNode(eventNode);
-            if (event == null) {
-                System.out.println("Warning: None in Event");
-                System.out.println(eventNode.get("type").textValue());
-                continue;
-            }
+                if (event == null) {
+                    throw new JsonParseException(jsonParser,
+                        "Could not parse given city event object.");
+                }
             round.events.add(event);
         }
 
@@ -139,6 +130,8 @@ class RoundDeserializer extends JsonDeserializer<Round> {
             round.error = errorNode.asText();
         }
 
+        // Put the pathogens in the round for implementations
+        // that work directly with given pathogens
         round.pathogens = eventFactory.pathogens;
         return round;
     }

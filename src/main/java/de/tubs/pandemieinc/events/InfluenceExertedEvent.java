@@ -1,8 +1,11 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.SimpleEvent;
-
-public class InfluenceExertedEvent extends SimpleEvent  {
+/**
+ * InfluenceExertedEvent - An city event
+ * This event indicates that the action "exertInfluence" was used on the
+ * given city.
+ */
+public class InfluenceExertedEvent extends SimpleEvent {
 
     public static final String eventName = "influenceExerted";
     public int round;

@@ -1,8 +1,10 @@
 package de.tubs.pandemieinc.events;
 
 import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.events.BaseEvent;
 
+/**
+ * This is the abstract/base class for "indevelopment" events.
+ */
 public abstract class InDevelopmentEvent extends BaseEvent {
 
     public int sinceRound;

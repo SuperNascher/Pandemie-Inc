@@ -1,8 +1,12 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.TimedEvent;
-
-public class AirportClosedEvent extends TimedEvent  {
+/**
+ * AirportClosedEvent - City event
+ *
+ * This event indicates that the airport of the given
+ * city is closed.
+ */
+public class AirportClosedEvent extends TimedEvent {
 
     public static final String eventName = "airportClosed";
 

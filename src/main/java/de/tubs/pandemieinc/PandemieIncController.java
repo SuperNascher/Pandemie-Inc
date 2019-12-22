@@ -1,532 +1,222 @@
 package de.tubs.pandemieinc;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import de.tubs.pandemieinc.Strength;
-import de.tubs.pandemieinc.City;
-import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.Round;
-import de.tubs.pandemieinc.ActionPrinter;
-import de.tubs.pandemieinc.ActionHelper;
-import java.util.ArrayList;
-
 import de.tubs.pandemieinc.implementations.BogoImplementation;
-import de.tubs.pandemieinc.implementations.VaccDeadlyFirstImplementation;
+import de.tubs.pandemieinc.implementations.EndRoundImplementation;
+import de.tubs.pandemieinc.implementations.FileLoggerDecorator;
 import de.tubs.pandemieinc.implementations.MedDeadlyFirstImplementation;
-import de.tubs.pandemieinc.implementations.VaccFastFirstImplementation;
 import de.tubs.pandemieinc.implementations.MedFastFirstImplementation;
-import de.tubs.pandemieinc.implementations.VaccSlowFirstImplementation;
 import de.tubs.pandemieinc.implementations.MedSlowFirstImplementation;
+import de.tubs.pandemieinc.implementations.PandemieImpl;
+import de.tubs.pandemieinc.implementations.VaccDeadlyFirstImplementation;
+import de.tubs.pandemieinc.implementations.VaccFastFirstImplementation;
+import de.tubs.pandemieinc.implementations.VaccSlowFirstImplementation;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import de.tubs.pandemieinc.events.*;
-import java.util.ArrayList;
-
-
-// Delete me later
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.RandomAccessFile;
-
-
+/**
+* Controller class to map our implementations to specific URL endpoints.
+*/
 @RestController
 public class PandemieIncController {
 
-    public int gameId = 11058;
-    public ObjectMapper mapper = new ObjectMapper();
-    public ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-    public boolean activated = false;
-
-
-    @RequestMapping(value="/dummy", method=RequestMethod.POST, produces="application/json")
-    public String dummy(@RequestBody Round round) {
-
-
-        // Return endRound, if game is not pending
-        if (!round.outcome.equals("pending")) {
-            if(round.outcome.equals("win"))
-                System.out.println("Bogo Wins: " + Integer.toString(this.gameId));
-
-            return ActionPrinter.endRound();
-        }
-
+    /**
+    * BogoImplementation, a simple implementation that
+    * randomly decides a "possible" action.
+    *
+    * Available on /bogo (e.g. localhost:8080/bogo)
+    */
+    @RequestMapping(
+            value = {"/bogo", "/bogo/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String bogoImplementation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
         // Use "BogoSort" to select an action
-        BogoImplementation bogo = new BogoImplementation(round);
-        String action = bogo.selectAction();
-        return action;
-    }
-
-    @RequestMapping(value="/deadlyVacc", method=RequestMethod.POST, produces="application/json")
-    public String deadlyVacc(@RequestBody Round round) {
-
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-        // Save the files
-
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                VaccDeadlyFirstImplementation implement = new VaccDeadlyFirstImplementation(round);
-                action = implement.selectAction();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+        PandemieImpl bogo;
+        if (id != null) {
+            bogo = new FileLoggerDecorator(BogoImplementation::new);
+            ((FileLoggerDecorator) bogo).path = "/tmp/pandemieinc/" + id;
+        } else {
+            bogo = new BogoImplementation();
         }
-
-        // Return the action
+        String action = bogo.selectAction(round);
         return action;
     }
 
-    @RequestMapping(value="/deadlyMed", method=RequestMethod.POST, produces="application/json")
-    public String deadlyMed(@RequestBody Round round) {
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-        // Save the files
-
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                MedDeadlyFirstImplementation implement = new MedDeadlyFirstImplementation(round);
-                action = implement.selectAction();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+    /**
+    * VaccDeadlyFirstImplementation, an implementation
+    * that tries to defeat the deadly pathogen at beginning and
+    * then develops vaccines for the other pathogens.
+    *
+    * Available on /deadlyVacc (e.g. localhost:8080/deadlyVacc)
+    */
+    @RequestMapping(
+            value = {"/deadlyVacc", "/deadlyVacc/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String deadlyVaccImplmentation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
+        PandemieImpl impl;
+        if (id != null) {
+            impl = new FileLoggerDecorator(VaccDeadlyFirstImplementation::new);
+            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
+        } else {
+            impl = new VaccDeadlyFirstImplementation();
         }
-
-        // Return the action
+        String action = impl.selectAction(round);
         return action;
     }
 
-    @RequestMapping(value="/fastVacc", method=RequestMethod.POST, produces="application/json")
-    public String fastVacc(@RequestBody Round round) {
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-        // Save the files
-
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                VaccFastFirstImplementation implement = new VaccFastFirstImplementation(round);
-                action = implement.selectAction();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+    /**
+    * MedDeadlyFirstImplementation, an implementation
+    * that tries to defeat the deadly pathogen at beginning and
+    * then develops medications for the other pathogens.
+    *
+    * Available on /deadlyMed (e.g. localhost:8080/deadlyMed)
+    */
+    @RequestMapping(
+            value = {"/deadlyMed", "/deadlyMed/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String deadlyMedImplementation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
+        PandemieImpl impl;
+        if (id != null) {
+            impl = new FileLoggerDecorator(MedDeadlyFirstImplementation::new);
+            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
+        } else {
+            impl = new MedDeadlyFirstImplementation();
         }
-
-        // Return the action
+        String action = impl.selectAction(round);
         return action;
     }
 
-    @RequestMapping(value="/fastMed", method=RequestMethod.POST, produces="application/json")
-    public String fastMed(@RequestBody Round round) {
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-        // Save the files
-
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                MedFastFirstImplementation implement = new MedFastFirstImplementation(round);
-                action = implement.selectAction();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+    /**
+    * VaccFastFirstImplementation, an implementation
+    * that tries to defeat the fastest pathogen at beginning and
+    * then develops vaccines for the other pathogens.
+    *
+    * Available on /fastVacc (e.g. localhost:8080/fastVacc)
+    */
+    @RequestMapping(
+            value = {"/fastVacc", "/fastVacc/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String fastVaccImplementation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
+        PandemieImpl impl;
+        if (id != null) {
+            impl = new FileLoggerDecorator(VaccFastFirstImplementation::new);
+            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
+        } else {
+            impl = new VaccFastFirstImplementation();
         }
-
-        // Return the action
+        String action = impl.selectAction(round);
         return action;
     }
 
-    @RequestMapping(value="/slowVacc", method=RequestMethod.POST, produces="application/json")
-    public String slowVacc(@RequestBody Round round) {
-
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-        // Save the files
-
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                VaccSlowFirstImplementation implement = new VaccSlowFirstImplementation(round);
-                action = implement.selectAction();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+    /**
+    * MedFastFirstImplementation, an implementation
+    * that tries to defeat the fastest pathogen at beginning and
+    * then develops medications for the other pathogens.
+    *
+    * Available on /fastMed (e.g. localhost:8080/fastMed)
+    */
+    @RequestMapping(
+            value = {"/fastMed", "/fastMed/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String fastMedImplementation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
+        PandemieImpl impl;
+        if (id != null) {
+            impl = new FileLoggerDecorator(MedFastFirstImplementation::new);
+            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
+        } else {
+            impl = new MedFastFirstImplementation();
         }
-
-        // Return the action
+        String action = impl.selectAction(round);
         return action;
     }
 
-    @RequestMapping(value="/slowMed", method=RequestMethod.POST, produces="application/json")
-    public String slowMed(@RequestBody Round round) {
-
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-        // Save the files
-
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                MedSlowFirstImplementation implement = new MedSlowFirstImplementation(round);
-                action = implement.selectAction();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+    /**
+    * VaccSlowFirstImplementation, an implementation
+    * that tries to defeat the slowest pathogen at beginning and
+    * then develops vaccines for the other pathogens.
+    *
+    * Available on /slowVacc (e.g. localhost:8080/slowVacc)
+    */
+    @RequestMapping(
+            value = {"/slowVacc", "/slowVacc/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String slowVaccImplementation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
+        PandemieImpl impl;
+        if (id != null) {
+            impl = new FileLoggerDecorator(VaccSlowFirstImplementation::new);
+            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
+        } else {
+            impl = new VaccSlowFirstImplementation();
         }
-
-        // Return the action
+        String action = impl.selectAction(round);
         return action;
     }
 
-    @RequestMapping(value="/logging", method=RequestMethod.POST, produces="application/json")
-    public String test(@RequestBody Round round) {
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-        if(round.outcome.equals("win"))
-            System.out.println("Bogo Wins: " + Integer.toString(this.gameId));
-
-
-        // Save the files
-
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                BogoImplementation bogo = new BogoImplementation(round);
-                action = bogo.selectAction();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+    /**
+    * MedSlowFirstImplementation, an implementation
+    * that tries to defeat the slowest pathogen at beginning and
+    * then develops medications for the other pathogens.
+    *
+    * Available on /slowMed (e.g. localhost:8080/slowMed)
+    */
+    @RequestMapping(
+            value = {"/slowMed", "/slowMed/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String slowMedImplementation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
+        PandemieImpl impl;
+        if (id != null) {
+            impl = new FileLoggerDecorator(MedSlowFirstImplementation::new);
+            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
+        } else {
+            impl = new MedSlowFirstImplementation();
         }
-
-        // Return the action
+        String action = impl.selectAction(round);
         return action;
     }
 
-    @RequestMapping(value="/loggingendround", method=RequestMethod.POST, produces="application/json")
-    public String testendround(@RequestBody Round round) {
-        String prePath = "/tmp/pandemieinc/";
-        String directoryName = prePath.concat(Integer.toString(this.gameId));
-        String action;
-
-
-        // Save the files
-        try {
-            // Create game directory if not exists
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            // Save the round.json
-            File roundFile = new File(directoryName + "/" + round.round + ".json");
-            if (!roundFile.exists()) {
-                roundFile.createNewFile();
-                this.writer.writeValue(roundFile, round);
-            }
-
-            if (round.outcome.equals("pending")) {
-                // Generate the action
-                action = ActionPrinter.endRound();
-
-                // Save round_response
-                String actionFileName = directoryName + "/" + round.round + "_action.json";
-                File roundActionFile = new File(actionFileName);
-                boolean fileExists = roundActionFile.exists();
-                RandomAccessFile roundActionWriter = new RandomAccessFile(roundActionFile, "rw");
-                if (fileExists) {
-                    long position = roundActionWriter.length();
-                    if (position > 0) {
-                        roundActionWriter.seek(position - 2);
-                    }
-                    String actionFile = ",\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                } else {
-                    String actionFile = "[\n" + action + "\n]";
-                    roundActionWriter.write(actionFile.getBytes("UTF-8"));
-                }
-                roundActionWriter.close();
-            } else {
-                this.gameId = this.gameId + 1;
-                action = ActionPrinter.endRound();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            action = ActionPrinter.endRound();
+    /**
+    * EndRoundImplementation, an implementation
+    * that only returns "endRound" for learning and documentation
+    * purposes.
+    *
+    * Available on /endRound (e.g. localhost:8080/endRound)
+    */
+    @RequestMapping(
+            value = {"/endRound", "/endRound/{id}"},
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String endRoundImplementation(
+            @PathVariable(required = false) String id, @RequestBody Round round) {
+        PandemieImpl impl;
+        if (id != null) {
+            impl = new FileLoggerDecorator(EndRoundImplementation::new);
+            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
+        } else {
+            impl = new EndRoundImplementation();
         }
-
-        // Return the action
+        String action = impl.selectAction(round);
         return action;
     }
 
-
+    /**
+    * Index page for accidental access through the web. ;-)
+    */
     @RequestMapping("/")
     public String index() {
         return "<html><head><title>Nothing to see here ;-)</title></head><body><h1>Hoi!</h1></body></html>";

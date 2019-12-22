@@ -1,8 +1,12 @@
 package de.tubs.pandemieinc.events;
 
-import de.tubs.pandemieinc.events.SimpleEvent;
-
-public class ElectionsCalledEvent extends SimpleEvent  {
+/**
+ * ElectionsCalledEvent - City event
+ *
+ * This event indicates that the action "callElections"
+ * was executed on the given city.
+ */
+public class ElectionsCalledEvent extends SimpleEvent {
 
     public static final String eventName = "electionsCalled";
     public int round;
