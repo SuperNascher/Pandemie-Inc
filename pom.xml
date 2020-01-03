@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>de.tubs</groupId>
 	<artifactId>pandemieinc</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>pandemieinc</name>
 	<description>Pandemie Inc Software</description>
 
@@ -23,7 +23,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

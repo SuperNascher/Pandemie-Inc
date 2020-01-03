@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 * Controller class to map our implementations to specific URL endpoints.
 */
 @RestController
-public class PandemieIncController {
+@RequestMapping("/api")
+public class PandemieIncAPIController {
 
     /**
     * BogoImplementation, a simple implementation that
@@ -212,13 +213,5 @@ public class PandemieIncController {
         }
         String action = impl.selectAction(round);
         return action;
-    }
-
-    /**
-    * Index page for accidental access through the web. ;-)
-    */
-    @RequestMapping("/")
-    public String index() {
-        return "<html><head><title>Nothing to see here ;-)</title></head><body><h1>Hoi!</h1></body></html>";
     }
 }

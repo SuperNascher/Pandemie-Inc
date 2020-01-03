@@ -1,4 +1,4 @@
-# Pandemie-ink
+# Pandemie-Inc
 
 ## Requirements
 - Java (version >= 8)

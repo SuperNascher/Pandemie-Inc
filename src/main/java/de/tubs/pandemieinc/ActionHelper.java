@@ -119,11 +119,11 @@ public class ActionHelper {
     * @param pathogens A collection of pathogens.
     * @return The pathogen, that is the fastes from the given collection.
     */
-    public static Pathogen findFastlyPathogen(Iterable<Pathogen> pathogen) {
+    public static Pathogen findFastlyPathogen(Iterable<Pathogen> pathogens) {
         float spreadRating = 10;
         Pathogen fastPath = null;
 
-        for (Pathogen temp : pathogen) {
+        for (Pathogen temp : pathogens) {
             float duration = temp.duration.level;
             float infectivity = temp.infectivity.level;
 
@@ -150,12 +150,12 @@ public class ActionHelper {
     * @param pathogens A collection of pathogens.
     * @return The pathogen, that is the slowest from the given collection.
     */
-    public static Pathogen findSlowlyPathogen(Iterable<Pathogen> pathogen) {
+    public static Pathogen findSlowlyPathogen(Iterable<Pathogen> pathogens) {
 
         float spreadRating = 10;
         Pathogen slowPath = null;
 
-        for (Pathogen temp : pathogen) {
+        for (Pathogen temp : pathogens) {
             float duration = temp.duration.level;
             float infectivity = temp.infectivity.level;
 

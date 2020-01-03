@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
-* Application class for Spring Boot to detect our backend application.
+* Application class for Spring Boot to start Spring for our backend application.
 */
 @SpringBootApplication
 public class PandemieIncApplication {

@@ -88,7 +88,8 @@ class RoundDeserializer extends JsonDeserializer<Round> {
                 cityEvents.put(city.name, eventsNode);
             }
             city.connections = new HashMap<String, City>();
-            cityLocations.put(city.name, node.get("connections"));
+            JsonNode connections = node.path("connections");
+            cityLocations.put(city.name, connections);
         }
 
         // Parse the city events
@@ -109,13 +110,15 @@ class RoundDeserializer extends JsonDeserializer<Round> {
             City city = round.cities.get(cityLocation.getKey());
             for (JsonNode cityNode : cityLocation.getValue()) {
                 City targetCity = round.cities.get(cityNode.textValue());
-                city.connections.put(targetCity.name, targetCity);
+                if (targetCity != null) {
+                    city.connections.put(targetCity.name, targetCity);
+                }
             }
         }
 
         // Events parsing
         round.events = new ArrayList<BaseEvent>();
-        for (JsonNode eventNode : tree.get("events")) {
+        for (JsonNode eventNode : tree.path("events")) {
             BaseEvent event = eventFactory.parseFromJsonNode(eventNode);
                 if (event == null) {
                     throw new JsonParseException(jsonParser,

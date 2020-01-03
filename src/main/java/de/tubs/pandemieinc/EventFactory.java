@@ -152,12 +152,12 @@ public class EventFactory {
      * Parse an OtherEvent object from a given JsonNode.
      *
      * @param node A JsonNode object, where the values should be parseable.
-     * @return a OtherEvent object with the parsed attributes or null on error.
+     * @return a BaseEvent object with the parsed attributes or null on error.
      */
-    public OtherEvent parseOtherEvent(JsonNode node) {
+    public BaseEvent parseOtherEvent(JsonNode node) {
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> fields =
-                mapper.convertValue(node, new TypeReference<HashMap<String, Object>>() {});
+        Map<String, String> fields =
+                mapper.convertValue(node, new TypeReference<HashMap<String, String>>() {});
         return new OtherEvent(fields);
     }
 
@@ -193,7 +193,7 @@ public class EventFactory {
      */
     public BaseEvent parsePathogenEvent(
             JsonNode node, String roundAttribute, Supplier<PathogenEvent> constructor) {
-        JsonNode value = node.path("pathogen").path("name");
+        JsonNode value = node.at("/pathogen/name");
         if (value.isMissingNode()) {
             return null;
         }
@@ -300,7 +300,7 @@ public class EventFactory {
      * @return a ConnectionClosedEvent object with the parsed attributes or null on error.
      */
     public BaseEvent parseConnectionClosedEvent(JsonNode node) {
-        JsonNode value = node.get("city");
+        JsonNode value = node.path("city");
         if (value.isMissingNode()) {
             return null;
         }
@@ -364,7 +364,7 @@ public class EventFactory {
      */
     public OutbreakEvent parseOutbreakEvent(JsonNode node) {
         // Parse the Pathogen
-        JsonNode value = node.path("pathogen").path("name");
+        JsonNode value = node.at("/pathogen/name");
         if (value.isMissingNode()) {
             return null;
         }
