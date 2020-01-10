@@ -4,175 +4,218 @@
  *                      *
  ************************/
 
-// Get Round
-round = parseInt(location.hash.substr(1));
-if (isNaN(round)) {
-    round = 0;
+let dropArea = document.getElementById('drop-area');
+
+['dragover', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false)
+});
+
+function preventDefaults (e) {
+    e.preventDefault()
+    e.stopPropagation()
 }
 
-// Get filename
-var urlParams = new URLSearchParams(window.location.search);
-var file = urlParams.get('file');
+['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false)
+});
 
-// Parse file
-var request = new XMLHttpRequest();
-request.open("GET", file, false);
-request.send(null)
-var json = JSON.parse(request.responseText);
+['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false)
+});
 
-// Prepare colors for pathogens
-var colors = ['red', 'blue', 'yellow', 'pink', 'black', 'white'];
-var colorCounter = 0;
-var pathogenColors = [];
-
-// Array with all bubble information for all rounds: bubbles[3] contains all information for round three
-bubbles = [];
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-pathogenes = {};
-
-// Make coords great again -------------------------------------------------------------------------------------------------------------------------------------------------------
-city_coords = new Map();
-for (let city of Object.values(json[0].cities)) {
-    city_coords.set(city.name, [city.latitude, city.longitude]);
+function highlight(e) {
+    dropArea.classList.add('highlight')
 }
 
-// Fill bubbles-array with all information ------------------------------------------------------------------------------------------------------------------------------------------
-var i;
-for (i = 0; i < json.length; i++) { // for each round in game
-    bubbles[i] = [];
-    var infectedCities = {};
-    var infectedHumans = {};
-    var killedHumans = {};
+function unhighlight(e) {
+    dropArea.classList.remove('highlight')
+}
 
-    for (let city of Object.values(json[i].cities)) { // for each city in round
-        if (typeof city.events != 'undefined') { // if any event happened
-            var j;
-            for (j = 0; j < city.events.length; j++) { // for each event in city
-                if (city.events[j].type == 'outbreak') { // if event outbreak happened
+dropArea.addEventListener('drop', onDrop, false)
 
-                    // Assign new color per pathogen
-                    if (!Object.keys(pathogenColors).includes(city.events[j].pathogen.name)) {
-                        pathogenColors[city.events[j].pathogen.name] = colors[colorCounter];
-                        colorCounter++;
-                    }
+function onDrop(e) {
+    console.log('DROPPED');
 
-                    // Push information to bubbles-array
-                    bubbles[i].push({
-                        city: city.name,
-                        pathogen: city.events[j].pathogen.name,
-                        radius: 5,
-                        fillKey: pathogenColors[city.events[j].pathogen.name],
-                        borderOpacity: 0.75,
-                        latitude: city.latitude,
-                        longitude: city.longitude,
-                        economy: city.economy,
-                        government: city.government,
-                        hygiene: city.hygiene,
-                        awareness: city.awareness,
-                        population: city.population,
-                        prevalence: city.events[j].prevalence,
-                        connections: city.connections,
-                    });
+    var reader = new FileReader();
+    reader.onload = onReaderLoad;
+    reader.readAsText(e.dataTransfer.files[0]);
 
-                    // count infected cities
-                    if (typeof infectedCities[city.events[j].pathogen.name] == 'undefined') {
-                        infectedCities[city.events[j].pathogen.name] = 1;
-                    } else {
-                        infectedCities[city.events[j].pathogen.name] += 1;
-                    }
-
-                    // count infected humans
-                    if (typeof infectedHumans[city.events[j].pathogen.name] == 'undefined') {
-                        infectedHumans[city.events[j].pathogen.name] = city.population * city.events[j].prevalence;
-                    } else {
-                        infectedHumans[city.events[j].pathogen.name] += city.population * city.events[j].prevalence;
-                    }
-
-                    // count killed humans
-                    if(i > 0) { // don't do this in first round
-                        killedHumans[city.events[j].pathogen.name] = pathogenes[i-1].killedHumans[city.events[j].pathogen.name];
-                        if (typeof killedHumans[city.events[j].pathogen.name] == 'undefined') {
-                            // console.log(json[i-1].cities[city.name].population);
-                            console.log("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-                            killedHumans[city.events[j].pathogen.name] += json[i-1].cities[city.name].population - json[i].cities[city.name].population;
-                        } else {
-                            killedHumans[city.events[j].pathogen.name] += json[i-1].cities[city.name].population - json[i].cities[city.name].population;
-                            // console.log(pathogenes[i-1].killedHumans[city.events[j].pathogen.name]);
-                        }
-                    } else {
-                        killedHumans[city.events[j].pathogen.name] = 0;
-                    }
+}
 
 
-                    
-                } else { // City with event(s), but no outbreak
-                    // Push information to bubbles-array
-                    bubbles[i].push({
-                        city: city.name,
-                        radius: 5,
-                        latitude: city.latitude,
-                        longitude: city.longitude,
-                        economy: city.economy,
-                        government: city.government,
-                        hygiene: city.hygiene,
-                        awareness: city.awareness,
-                        population: city.population,
-                        connections: city.connections,
-                    });
-                }
-            }
-        } else { // City without any event
-            // Push information to bubbles-array
-            bubbles[i].push({
-                city: city.name,
-                radius: 2,
-                fillKey: 'black',
-                borderWidth: 0,
-                latitude: city.latitude,
-                longitude: city.longitude,
-                economy: city.economy,
-                government: city.government,
-                hygiene: city.hygiene,
-                awareness: city.awareness,
-                population: city.population,
-                connections: city.connections,
-    });
-        }
+
+
+
+
+
+function onChange(event) {
+    var reader = new FileReader();
+    reader.onload = onReaderLoad;
+    reader.readAsText(event.target.files[0]);
+}
+
+function onReaderLoad(event){
+    //console.log(event.target.result);
+    json = JSON.parse(event.target.result);
+    start();
+    // console.log(json);
+}
+
+
+
+function start() {
+
+    // Get Round
+    round = parseInt(location.hash.substr(1));
+    if (isNaN(round)) {
+        round = 0;
     }
+
+    // Prepare colors for pathogens
+    var colors = ['red', 'blue', 'yellow', 'pink', 'black', 'white'];
+    var colorCounter = 0;
+    var pathogenColors = [];
+
+    // Array with all bubble information for all rounds: bubbles[3] contains all information for round three
+    bubbles = [];
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    pathogenes = {};
+
+    // Make coords great again -------------------------------------------------------------------------------------------------------------------------------------------------------
+    city_coords = new Map();
+    for (let city of Object.values(json[0].cities)) {
+        city_coords.set(city.name, [city.latitude, city.longitude]);
+    }
+
+    // Fill bubbles-array with all information ------------------------------------------------------------------------------------------------------------------------------------------
+    // !!!!! TODO: Diesen Part neu strukturieren, sodass bubbles.push nur 1 mal vorkommt. Objekt aus bubbles.push trennen und mit if-Abfragen nur entscheiden, ob das Objekt ein Attribut zugewiesen bekommt
+    //
+    //
+    //
+    var i;
+    for (i = 0; i < json.length; i++) { // for each round in game
+        bubbles[i] = [];
+        var infectedCities = {};
+        var infectedHumans = {};
+        var killedHumans = {};
+
+        for (let city of Object.values(json[i].cities)) { // for each city in round
+            var bubble = {};
+
+            // Set basic bubble values
+            bubble.city = city.name;
+            bubble.latitude = city.latitude;
+            bubble.longitude = city.longitude;
+            bubble.economy = city.economy;
+            bubble.government = city.government;
+            bubble.hygiene = city.hygiene;
+            bubble.awareness = city.awareness;
+            bubble.population = city.population;
+            bubble.connections = city.connections;
+            bubble.radius = 5;
+
+            if (typeof city.events != 'undefined') { // if any event happened
+                var j;
+                for (j = 0; j < city.events.length; j++) { // for each event in city
+                    if (city.events[j].type == 'outbreak') { // if event outbreak happened
+
+                        // Assign new color per pathogen
+                        if (!Object.keys(pathogenColors).includes(city.events[j].pathogen.name)) {
+                            pathogenColors[city.events[j].pathogen.name] = colors[colorCounter];
+                            colorCounter++;
+                        }
+
+                        // Set additional bubble values
+                        bubble.pathogen = city.events[j].pathogen.name;
+                        bubble.fillKey = pathogenColors[city.events[j].pathogen.name];
+                        bubble.borderOpacity = 0.75;
+                        bubble.prevalence = city.events[j].prevalence;
+
+                        // count infected cities
+                        if (typeof infectedCities[city.events[j].pathogen.name] == 'undefined') {
+                            infectedCities[city.events[j].pathogen.name] = 1;
+                        } else {
+                            infectedCities[city.events[j].pathogen.name] += 1;
+                        }
+
+                        // count infected humans
+                        if (typeof infectedHumans[city.events[j].pathogen.name] == 'undefined') {
+                            infectedHumans[city.events[j].pathogen.name] = city.population * city.events[j].prevalence;
+                        } else {
+                            infectedHumans[city.events[j].pathogen.name] += city.population * city.events[j].prevalence;
+                        }
+
+                        // count killed humans
+                        if(i > 0) { // don't do this in first round
+                            killedHumans[city.events[j].pathogen.name] = pathogenes[i-1].killedHumans[city.events[j].pathogen.name];
+                            if (typeof killedHumans[city.events[j].pathogen.name] == 'undefined') {
+                                // console.log(json[i-1].cities[city.name].population);
+                                console.log("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+                                killedHumans[city.events[j].pathogen.name] += json[i-1].cities[city.name].population - json[i].cities[city.name].population;
+                            } else {
+                                killedHumans[city.events[j].pathogen.name] += json[i-1].cities[city.name].population - json[i].cities[city.name].population;
+                                // console.log(pathogenes[i-1].killedHumans[city.events[j].pathogen.name]);
+                            }
+                        } else {
+                            killedHumans[city.events[j].pathogen.name] = 0;
+                        }
+                    }
+                }
+            } else { // City without any event
+                // Set additional bubble values
+                bubble.radius = 2;
+                bubble.fillKey = 'black';
+                bubble.borderWidth = 0;
+            }
+            // push to bubbles array
+
+            bubbles[i].push(bubble);
+
+        }
         // push here :D
         pathogenes[i] = {};
         pathogenes[i].infectedCities = infectedCities;
         pathogenes[i].infectedHumans = infectedHumans;
         pathogenes[i].killedHumans = killedHumans;
 
+    }
+    //
+    //
+    //
+    //
+    //
+
+
+    console.log(pathogenes);
+
+
+
+
+    /************************
+     *                      *
+     *       Output         *
+     *                      *
+     ************************/
+
+    // Set slider range and value
+    document.getElementById("roundSlider").max = (json.length - 1);
+    document.getElementById("roundSlider").value = round;
+
+    // Show slider value
+    slider = document.getElementById("roundSlider");    // Slider object
+    output = document.getElementById("sliderValue");    // Slider value output
+    output.innerHTML = slider.value;                    // Display the default slider value
+
+    document.getElementById("pathogeneData").classList.remove('d-none');
+
+    // Initially create map and additional elements
+    createMap();
+    updateMap(round);
+
+    startEventListeners();
+
 }
-
-console.log(pathogenes);
-
-
-
-
-/************************
- *                      *
- *       Output         *
- *                      *
- ************************/
-
-// Set slider range and value
-document.getElementById("roundSlider").max = (json.length - 1);
-document.getElementById("roundSlider").value = round;
-
-// Show slider value
-slider = document.getElementById("roundSlider");    // Slider object
-output = document.getElementById("sliderValue");    // Slider value output
-output.innerHTML = slider.value;                    // Display the default slider value
-
-// Initially create map and additional elements
-createMap();
-updateMap(round);
-
-
 
 
 
@@ -186,8 +229,12 @@ updateMap(round);
   * Create blank map (without additional elements)
   */
 function createMap() {
+
+    mapDiv = document.getElementById("map");
+    mapDiv.innerHTML = '';
+
     map = new Datamap({
-        element: document.getElementById("map"),
+        element: mapDiv,
         geographyConfig: {
           popupOnHover: false,
           highlightOnHover: false
@@ -219,14 +266,14 @@ function updateMap(toRound) {
     , {
         popupTemplate: function(geo, data) {
         return `<div class="hoverinfo"><table>
-                <tr><td class="first-td">City:</td><td>${data.city}</td></tr>
-                <tr><td class="first-td">Pathogen:</td><td>${data.pathogen}</td></tr>
-                <tr><td class="first-td">Economy:</td><td>${data.economy}</td></tr>
-                <tr><td class="first-td">Government:</td><td>${data.government}</td></tr>
-                <tr><td class="first-td">Hygiene:</td><td>${data.hygiene}</td></tr>
-                <tr><td class="first-td">Awareness:</td><td>${data.awareness}</td></tr>
-                <tr><td class="first-td">Population:</td><td>${data.population}</td></tr>
-                <tr><td class="first-td">Prevalence:</td><td>${data.prevalence}</td></tr>
+                <tr><td class="text-right">City:</td><td>${data.city}</td></tr>
+                <tr><td class="text-right">Pathogen:</td><td>${data.pathogen}</td></tr>
+                <tr><td class="text-right">Economy:</td><td>${data.economy}</td></tr>
+                <tr><td class="text-right">Government:</td><td>${data.government}</td></tr>
+                <tr><td class="text-right">Hygiene:</td><td>${data.hygiene}</td></tr>
+                <tr><td class="text-right">Awareness:</td><td>${data.awareness}</td></tr>
+                <tr><td class="text-right">Population:</td><td>${data.population}</td></tr>
+                <tr><td class="text-right">Prevalence:</td><td>${data.prevalence}</td></tr>
                 </table></div>`;
         },
         exitDelay: 1,
@@ -239,7 +286,7 @@ function updateMap(toRound) {
  */
 function sliderChange() {
     round = slider.value;
-    document.location.href = "http://localhost/worldmap/?file=ic2.json#" + round;
+    location.hash = "#" + round;
     output.innerText = round;
     updateMap(round);
 }
@@ -298,35 +345,40 @@ function setArcs(city) {
  *                      *
  ************************/
 
-// Keypress
-document.addEventListener('keydown', logKey);
+document.getElementById('ulFile').addEventListener('change', onChange);
 
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = function() {
-    output.innerHTML = this.value;
-}
 
-// Override mouseover 
-datamapMouseoverFunc = d3.selectAll('.datamaps-bubble').on('mouseover');
-d3.selectAll('.datamaps-bubble').on('mouseover', function(city) {
-    datamapMouseoverFunc.call(this, city);
+function startEventListeners() {
+    // Keypress
+    document.addEventListener('keydown', logKey);
 
-});
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+    }
 
-// Override mouseout
-datamapMouseoutFunc = d3.selectAll('.datamaps-bubble').on('mouseout');
-d3.selectAll('.datamaps-bubble').on('mouseout', function(city) {
-    datamapMouseoutFunc.call(this, city);
-    //map.arc([], {animationSpeed: 600});
-});
+    // Override mouseover 
+    datamapMouseoverFunc = d3.selectAll('.datamaps-bubble').on('mouseover');
+    d3.selectAll('.datamaps-bubble').on('mouseover', function(city) {
+        datamapMouseoverFunc.call(this, city);
 
-// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-cityClicked = null;
-d3.selectAll('.datamaps-bubble').on('click', setArcs);
+    });
 
-// Recreate map if window gets resized
-window.onresize = function() {
-    document.getElementById("map").innerHTML = '';
-    createMap();
-    updateMap(round);
+    // Override mouseout
+    datamapMouseoutFunc = d3.selectAll('.datamaps-bubble').on('mouseout');
+    d3.selectAll('.datamaps-bubble').on('mouseout', function(city) {
+        datamapMouseoutFunc.call(this, city);
+        //map.arc([], {animationSpeed: 600});
+    });
+
+    // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    cityClicked = null;
+    d3.selectAll('.datamaps-bubble').on('click', setArcs);
+
+    // Recreate map if window gets resized
+    window.onresize = function() {
+        document.getElementById("map").innerHTML = '';
+        createMap();
+        updateMap(round);
+    }
 }

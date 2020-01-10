@@ -14,9 +14,28 @@
     </head>
     <body>
 
-        <div id="map" style="position: relative; width: 100vw; height: 43vw;"></div>
 
-        <div class="row mr-0">
+        <div id="map" style="position: relative; width: 99vw; height: 43vw; margin: auto; margin-bottom: -3vw;">
+
+            <div id="drop-area">
+                <form class="my-form">
+                  <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
+                  <input type="file" id="ulFile" multiple>
+                  <label class="button" for="ulFile">Select some files</label>
+                </form>
+              </div>
+              
+
+            <!-- <div id="drop_zone" ondrop="dropHandler(event);" style="height:200px; width: 300px; border: 1px solid black">
+                <p>Drag one or more files to this Drop Zone ...</p>
+            </div>
+            
+            <form>
+                <input type="file" name="ulFile" id="ulFile">
+            </form> -->
+        </div>
+
+        <div class="row mr-0 d-none" id="pathogeneData">
             <div class="col-11" style="margin:auto;">
                 <div class="row">
                     <div class="col-8 px-2">
