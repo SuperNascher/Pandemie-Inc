@@ -23,11 +23,11 @@ function prepareGlobalVars() {
     round = parseInt(location.hash.substr(1));
 
     // global value which contains the last round
-    lastRound = json.length - 1;
+    lastRound = json.length;
 
-    // ensure: 0 <= round <= lastRound
-    if (isNaN(round) || round > lastRound || round < 0) {
-        round = 0;
+    // ensure: 1 <= round <= lastRound
+    if (isNaN(round) || round > lastRound || round < 1) {
+        round = 1;
         location.hash = '#' + round;
     }
 
@@ -59,14 +59,13 @@ function analyzeGame() {
     // prepare colors for pathogens
     var colors = ['red', 'blue', 'yellow', 'pink', 'green', 'white'];
 
-    var i;
-    for (i = 0; i <= lastRound; i++) { // for each round in game
+    for (var i = 1; i <= lastRound; i++) { // for each round in game
         bubbles[i] = [];
         var infectedCities = {};
         var infectedHumans = {};
         var killedHumans = {};
 
-        for (let city of Object.values(json[i].cities)) { // for each city in round
+        for (let city of Object.values(json[i-1].cities)) { // for each city in round
             var bubble = {};
 
             // set basic bubble values
@@ -116,8 +115,8 @@ function analyzeGame() {
                         }
 
                         // count killed humans
-                        if (i > 0) {
-                            killedHumans[event.pathogen.name] = json[i-1].cities[city.name].population - json[i].cities[city.name].population;
+                        if (i > 1) {
+                            killedHumans[event.pathogen.name] = json[i-2].cities[city.name].population - json[i-1].cities[city.name].population;
                         }
 
                     }
@@ -158,7 +157,7 @@ function pathogensWrapUp() {
             if (typeof pathogens[i].ckh[p] == 'undefined') {
                 pathogens[i].ckh[p] = 0;
             }
-            if (i > 0) {
+            if (i > 1) {
                 pathogens[i].tkh[p] = pathogens[i-1].tkh[p] + pathogens[i].ckh[p];
             } else {
                 pathogens[i].tkh[p] = 0;

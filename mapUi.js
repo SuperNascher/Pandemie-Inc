@@ -26,13 +26,13 @@ function createUI() {
         }
     });
 
-    // Slider object
+    // slider object
     slider = document.getElementById('roundSlider');
-    // Slider value output
+    // slider value output
     sliderValueOutput = document.getElementById('sliderValue');
 
-    // Set slider range and value
-    slider.max = (lastRound);
+    // set slider range and value
+    slider.max = lastRound;
     slider.value = round;
 
     // show slider value and remove old value if necessary
@@ -41,7 +41,7 @@ function createUI() {
     }
     sliderValueOutput.appendChild(document.createTextNode(round));
 
-    // 
+    // show pathogen data and settings cards
     document.getElementById('dataAndSettings').classList.remove('d-none');
     
 }
@@ -83,13 +83,13 @@ function updateUI() {
 
     // show outcome in round card
     var outcomeBadge = document.getElementById('outcome');
-    outcomeBadge.innerText = json[round].outcome;
+    outcomeBadge.innerText = json[round-1].outcome;
     outcomeBadge.classList.add('badge', 'float-right');
 
-    if (json[round].outcome == 'win') {
+    if (json[round-1].outcome == 'win') {
         outcomeBadge.classList.remove('badge-warning');
         outcomeBadge.classList.add('badge-success');
-    } else if (json[round].outcome == 'loss') {
+    } else if (json[round-1].outcome == 'loss') {
         outcomeBadge.classList.remove('badge-warning');
         outcomeBadge.classList.add('badge-danger');
     } else {

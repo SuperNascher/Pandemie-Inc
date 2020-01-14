@@ -16,7 +16,7 @@ function startEventListeners() {
  * Called when any key is pressed.
  * Changes the round +1 when right arrow and -1 when left arrow is pressed.
  * 
- * @param {object} e KeyboardEvent.
+ * @param {Object} e KeyboardEvent.
  */
 function moveSliderByKey(e) {
     var newRound = round;
@@ -73,7 +73,7 @@ function onWindowResize() {
 /**
  * Show/Hide all connections of the city that was clicked on.
  * 
- * @param {object} city City that was clicked on.
+ * @param {Object} city City that was clicked on.
  */
 function toggleArcs(city) {
     map.arc([]);
