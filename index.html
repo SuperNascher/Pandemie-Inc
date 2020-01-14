@@ -17,53 +17,32 @@
 
         <div id="map" style="position: relative; width: 99vw; height: 43vw; margin: auto; margin-bottom: -3vw;">
 
-            <div id="drop-area">
+            <div id="drop-area" class="jumbotron col-6 offset-3 mt-5">
                 <form class="my-form">
-                  <p>Upload a game as JSON-file to display it on a map.</p>
-                  <input type="file" id="ulFile" multiple>
-                  <label class="button" for="ulFile">Select some files</label>
+                    <p>Drop a game here to display it on a map or</p>
+                    <input type="file" id="ulFile" multiple>
+                    <label class="btn btn-outline-dark" for="ulFile">select the file</label>
                 </form>
-              </div>
-              
-
-            <!-- <div id="drop_zone" ondrop="dropHandler(event);" style="height:200px; width: 300px; border: 1px solid black">
-                <p>Drag one or more files to this Drop Zone ...</p>
             </div>
-            
-            <form>
-                <input type="file" name="ulFile" id="ulFile">
-            </form> -->
         </div>
 
-        <div class="row mr-0 d-none" id="pathogeneData">
+        <div class="row mr-0 d-none" id="dataAndSettings">
             <div class="col-11" style="margin:auto;">
                 <div class="row">
                     <div class="col-8 px-2">
-                        <div class="row" id="pathogeneInfo">
+                        <div class="row" id="pathogenCards">
             
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="card">
                             <div class="card-header">
-                                Settings
+                                Round: <span id="sliderValue"></span> <span id="outcome"></span>
                             </div> 
                             <div class="card-body">
-                                <p>
-                                    Round: <span id="sliderValue"></span>
-                                </p>
                                 <div class="form-group">
-                                    <input type="range" id="roundSlider" class="custom-range" name="round" min="0" onchange="sliderChange()">
-                                </div>
-                                <!--
-                                <div class="input-group mb-3">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile02">
-                                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
-                                    </div>
-                                </div>
-                                -->
-            
+                                    <input type="range" id="roundSlider" class="custom-range" name="round" min="0">
+                                </div>            
                             </div>
                         </div>
                     </div>
@@ -71,8 +50,12 @@
             </div>
         </div>
 
-        <script src="onescript.js"></script>
 
+        <script src="mapEventListener.js"></script>
+        <script src="mapUi.js"></script>
+        <script src="mapMain.js"></script>
+        <script src="uploadMain.js"></script>
+        <script src="uploadEventListener.js"></script>
 
     </body>
 </html>
