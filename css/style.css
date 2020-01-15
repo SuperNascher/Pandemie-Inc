@@ -1,0 +1,15 @@
+#map {
+    position: relative;
+    width: 99vw;
+    height: 43vw;
+    margin: auto;
+    margin-bottom: -3vw;
+}
+
+#ulFile {
+    display: none;
+}
+
+#dataAndSettings .col-11 {
+    margin: auto;
+}
