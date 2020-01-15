@@ -1,9 +1,6 @@
 package de.tubs.pandemieinc.events;
 
-/**
-* Base class for timed events
-* (events that have sinceround and untilround attributes)
-*/
+/** Base class for timed events (events that have sinceround and untilround attributes) */
 public abstract class TimedEvent extends BaseEvent {
 
     public int sinceRound;

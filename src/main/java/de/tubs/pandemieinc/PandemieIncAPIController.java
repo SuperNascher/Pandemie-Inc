@@ -16,19 +16,125 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
-* Controller class to map our implementations to specific URL endpoints.
-*/
+/** Controller class to map our implementations to specific URL endpoints. */
 @RestController
 @RequestMapping("/api")
 public class PandemieIncAPIController {
 
     /**
-    * BogoImplementation, a simple implementation that
-    * randomly decides a "possible" action.
-    *
-    * Available on /bogo (e.g. localhost:8080/bogo)
-    */
+     * BogoImplementation, a simple implementation that randomly decides a "possible" action.
+     *
+     * <p>Available on /bogo (e.g. localhost:8080/api/bogo)
+     */
+    @RequestMapping(value = "/bogo", method = RequestMethod.POST, produces = "application/json")
+    public String bogoImplementation(@RequestBody Round round) {
+        // Use "BogoSort" to select an action
+        BogoImplementation bogo = new BogoImplementation();
+        String action = bogo.selectAction(round);
+        return action;
+    }
+
+    /**
+     * VaccDeadlyFirstImplementation, an implementation that tries to defeat the deadly pathogen at
+     * beginning and then develops vaccines for the other pathogens.
+     *
+     * <p>Available on /deadlyVacc (e.g. localhost:8080/api/deadlyVacc)
+     */
+    @RequestMapping(
+            value = "/deadlyVacc",
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String deadlyVaccImplmentation(@RequestBody Round round) {
+        VaccDeadlyFirstImplementation impl = new VaccDeadlyFirstImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+
+    /**
+     * MedDeadlyFirstImplementation, an implementation that tries to defeat the deadly pathogen at
+     * beginning and then develops medications for the other pathogens.
+     *
+     * <p>Available on /deadlyMed (e.g. localhost:8080/api/deadlyMed)
+     */
+    @RequestMapping(
+            value = "/deadlyMed",
+            method = RequestMethod.POST,
+            produces = "application/json")
+    public String deadlyMedImplementation(@RequestBody Round round) {
+        MedDeadlyFirstImplementation impl = new MedDeadlyFirstImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+
+    /**
+     * VaccFastFirstImplementation, an implementation that tries to defeat the fastest pathogen at
+     * beginning and then develops vaccines for the other pathogens.
+     *
+     * <p>Available on /fastVacc (e.g. localhost:8080/api/fastVacc)
+     */
+    @RequestMapping(value = "/fastVacc", method = RequestMethod.POST, produces = "application/json")
+    public String fastVaccImplementation(@RequestBody Round round) {
+        VaccFastFirstImplementation impl = new VaccFastFirstImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+
+    /**
+     * MedFastFirstImplementation, an implementation that tries to defeat the fastest pathogen at
+     * beginning and then develops medications for the other pathogens.
+     *
+     * <p>Available on /fastMed (e.g. localhost:8080/api/fastMed)
+     */
+    @RequestMapping(value = "/fastMed", method = RequestMethod.POST, produces = "application/json")
+    public String fastMedImplementation(@RequestBody Round round) {
+        MedFastFirstImplementation impl = new MedFastFirstImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+
+    /**
+     * VaccSlowFirstImplementation, an implementation that tries to defeat the slowest pathogen at
+     * beginning and then develops vaccines for the other pathogens.
+     *
+     * <p>Available on /slowVacc (e.g. localhost:8080/api/slowVacc)
+     */
+    @RequestMapping(value = "/slowVacc", method = RequestMethod.POST, produces = "application/json")
+    public String slowVaccImplementation(@RequestBody Round round) {
+        VaccSlowFirstImplementation impl = new VaccSlowFirstImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+
+    /**
+     * MedSlowFirstImplementation, an implementation that tries to defeat the slowest pathogen at
+     * beginning and then develops medications for the other pathogens.
+     *
+     * <p>Available on /slowMed (e.g. localhost:8080/api/slowMed)
+     */
+    @RequestMapping(value = "/slowMed", method = RequestMethod.POST, produces = "application/json")
+    public String slowMedImplementation(@RequestBody Round round) {
+        MedSlowFirstImplementation impl = new MedSlowFirstImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+
+    /**
+     * EndRoundImplementation, an implementation that only returns "endRound" for learning and
+     * documentation purposes.
+     *
+     * <p>Available on /endRound (e.g. localhost:8080/api/endRound)
+     */
+    @RequestMapping(value = "/endRound", method = RequestMethod.POST, produces = "application/json")
+    public String endRoundImplementation(@RequestBody Round round) {
+        EndRoundImplementation impl = new EndRoundImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+}
+
+/*
+    // Examples, how views can also be written/created.
+
     @RequestMapping(
             value = {"/bogo", "/bogo/{id}"},
             method = RequestMethod.POST,
@@ -47,171 +153,16 @@ public class PandemieIncAPIController {
         return action;
     }
 
-    /**
-    * VaccDeadlyFirstImplementation, an implementation
-    * that tries to defeat the deadly pathogen at beginning and
-    * then develops vaccines for the other pathogens.
-    *
-    * Available on /deadlyVacc (e.g. localhost:8080/deadlyVacc)
-    */
     @RequestMapping(
-            value = {"/deadlyVacc", "/deadlyVacc/{id}"},
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public String deadlyVaccImplmentation(
-            @PathVariable(required = false) String id, @RequestBody Round round) {
-        PandemieImpl impl;
-        if (id != null) {
-            impl = new FileLoggerDecorator(VaccDeadlyFirstImplementation::new);
-            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
-        } else {
-            impl = new VaccDeadlyFirstImplementation();
-        }
-        String action = impl.selectAction(round);
-        return action;
-    }
-
-    /**
-    * MedDeadlyFirstImplementation, an implementation
-    * that tries to defeat the deadly pathogen at beginning and
-    * then develops medications for the other pathogens.
-    *
-    * Available on /deadlyMed (e.g. localhost:8080/deadlyMed)
-    */
-    @RequestMapping(
-            value = {"/deadlyMed", "/deadlyMed/{id}"},
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public String deadlyMedImplementation(
-            @PathVariable(required = false) String id, @RequestBody Round round) {
-        PandemieImpl impl;
-        if (id != null) {
-            impl = new FileLoggerDecorator(MedDeadlyFirstImplementation::new);
-            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
-        } else {
-            impl = new MedDeadlyFirstImplementation();
-        }
-        String action = impl.selectAction(round);
-        return action;
-    }
-
-    /**
-    * VaccFastFirstImplementation, an implementation
-    * that tries to defeat the fastest pathogen at beginning and
-    * then develops vaccines for the other pathogens.
-    *
-    * Available on /fastVacc (e.g. localhost:8080/fastVacc)
-    */
-    @RequestMapping(
-            value = {"/fastVacc", "/fastVacc/{id}"},
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public String fastVaccImplementation(
-            @PathVariable(required = false) String id, @RequestBody Round round) {
-        PandemieImpl impl;
-        if (id != null) {
-            impl = new FileLoggerDecorator(VaccFastFirstImplementation::new);
-            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
-        } else {
-            impl = new VaccFastFirstImplementation();
-        }
-        String action = impl.selectAction(round);
-        return action;
-    }
-
-    /**
-    * MedFastFirstImplementation, an implementation
-    * that tries to defeat the fastest pathogen at beginning and
-    * then develops medications for the other pathogens.
-    *
-    * Available on /fastMed (e.g. localhost:8080/fastMed)
-    */
-    @RequestMapping(
-            value = {"/fastMed", "/fastMed/{id}"},
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public String fastMedImplementation(
-            @PathVariable(required = false) String id, @RequestBody Round round) {
-        PandemieImpl impl;
-        if (id != null) {
-            impl = new FileLoggerDecorator(MedFastFirstImplementation::new);
-            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
-        } else {
-            impl = new MedFastFirstImplementation();
-        }
-        String action = impl.selectAction(round);
-        return action;
-    }
-
-    /**
-    * VaccSlowFirstImplementation, an implementation
-    * that tries to defeat the slowest pathogen at beginning and
-    * then develops vaccines for the other pathogens.
-    *
-    * Available on /slowVacc (e.g. localhost:8080/slowVacc)
-    */
-    @RequestMapping(
-            value = {"/slowVacc", "/slowVacc/{id}"},
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public String slowVaccImplementation(
-            @PathVariable(required = false) String id, @RequestBody Round round) {
-        PandemieImpl impl;
-        if (id != null) {
-            impl = new FileLoggerDecorator(VaccSlowFirstImplementation::new);
-            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
-        } else {
-            impl = new VaccSlowFirstImplementation();
-        }
-        String action = impl.selectAction(round);
-        return action;
-    }
-
-    /**
-    * MedSlowFirstImplementation, an implementation
-    * that tries to defeat the slowest pathogen at beginning and
-    * then develops medications for the other pathogens.
-    *
-    * Available on /slowMed (e.g. localhost:8080/slowMed)
-    */
-    @RequestMapping(
-            value = {"/slowMed", "/slowMed/{id}"},
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public String slowMedImplementation(
-            @PathVariable(required = false) String id, @RequestBody Round round) {
-        PandemieImpl impl;
-        if (id != null) {
-            impl = new FileLoggerDecorator(MedSlowFirstImplementation::new);
-            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
-        } else {
-            impl = new MedSlowFirstImplementation();
-        }
-        String action = impl.selectAction(round);
-        return action;
-    }
-
-    /**
-    * EndRoundImplementation, an implementation
-    * that only returns "endRound" for learning and documentation
-    * purposes.
-    *
-    * Available on /endRound (e.g. localhost:8080/endRound)
-    */
-    @RequestMapping(
-            value = {"/endRound", "/endRound/{id}"},
+            value = "/endRound/{id}",
             method = RequestMethod.POST,
             produces = "application/json")
     public String endRoundImplementation(
-            @PathVariable(required = false) String id, @RequestBody Round round) {
-        PandemieImpl impl;
-        if (id != null) {
-            impl = new FileLoggerDecorator(EndRoundImplementation::new);
-            ((FileLoggerDecorator) impl).path = "/tmp/pandemieinc/" + id;
-        } else {
-            impl = new EndRoundImplementation();
-        }
+            @PathVariable String id, @RequestBody Round round) {
+        FileLoggerDecorator impl = new FileLoggerDecorator(EndRoundImplementation::new);
+        impl.path = "/tmp/pandemieinc/" + id;
         String action = impl.selectAction(round);
         return action;
     }
-}
+
+*/

@@ -1,5 +1,10 @@
 package de.tubs.pandemieinc.events;
 
+/**
+ * AntiVaccinationismEvent - City event
+ *
+ * <p>This event indicates that the city has a negativ impact on "deployVaccine".
+ */
 public class AntiVaccinationismEvent extends SimpleEvent {
 
     public static final String eventName = "antiVaccinationism";

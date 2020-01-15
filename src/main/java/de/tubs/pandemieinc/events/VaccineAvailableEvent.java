@@ -3,8 +3,7 @@ package de.tubs.pandemieinc.events;
 import de.tubs.pandemieinc.Pathogen;
 
 /**
- * VaccineAvailableEvent - A global event
- * This event indicates that the vaccine for the given
+ * VaccineAvailableEvent - A global event This event indicates that the vaccine for the given
  * Pathogen is available for all cities.
  */
 public class VaccineAvailableEvent extends PathogenEvent {

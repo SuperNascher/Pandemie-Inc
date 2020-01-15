@@ -3,9 +3,8 @@ package de.tubs.pandemieinc.events;
 import de.tubs.pandemieinc.Pathogen;
 
 /**
- * MedicationDeployedEvent - An city event
- * This event indicates that the medication for the given pathogen
- * was deployed on the given city.
+ * MedicationDeployedEvent - An city event This event indicates that the medication for the given
+ * pathogen was deployed on the given city.
  */
 public class MedicationDeployedEvent extends PathogenEvent {
 

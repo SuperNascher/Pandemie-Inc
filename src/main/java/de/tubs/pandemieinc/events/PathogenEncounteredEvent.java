@@ -3,8 +3,8 @@ package de.tubs.pandemieinc.events;
 import de.tubs.pandemieinc.Pathogen;
 
 /**
- * PathogenEncounteredEvent - A global event
- * This event indicates that a Pathogen has been encountered in some cities.
+ * PathogenEncounteredEvent - A global event This event indicates that a Pathogen has been
+ * encountered in some cities.
  */
 public class PathogenEncounteredEvent extends PathogenEvent {
 

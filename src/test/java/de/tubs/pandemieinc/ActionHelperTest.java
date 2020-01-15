@@ -1,37 +1,31 @@
 package de.tubs.pandemieinc;
 
-import de.tubs.pandemieinc.ActionHelper;
-import de.tubs.pandemieinc.City;
-import de.tubs.pandemieinc.Pathogen;
-import de.tubs.pandemieinc.Strength;
-import de.tubs.pandemieinc.events.VaccineAvailableEvent;
-import de.tubs.pandemieinc.events.OutbreakEvent;
-import de.tubs.pandemieinc.events.QuarantineEvent;
-import de.tubs.pandemieinc.events.PathogenEncounteredEvent;
-import de.tubs.pandemieinc.events.VaccineInDevelopmentEvent;
-import de.tubs.pandemieinc.events.VaccineAvailableEvent;
-import de.tubs.pandemieinc.events.VaccineDeployedEvent;
-import de.tubs.pandemieinc.events.MedicationInDevelopmentEvent;
-import de.tubs.pandemieinc.events.MedicationAvailableEvent;
-import de.tubs.pandemieinc.events.MedicationDeployedEvent;
-
-import de.tubs.pandemieinc.Round;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import de.tubs.pandemieinc.events.MedicationAvailableEvent;
+import de.tubs.pandemieinc.events.MedicationDeployedEvent;
+import de.tubs.pandemieinc.events.MedicationInDevelopmentEvent;
+import de.tubs.pandemieinc.events.OutbreakEvent;
+import de.tubs.pandemieinc.events.PathogenEncounteredEvent;
+import de.tubs.pandemieinc.events.QuarantineEvent;
+import de.tubs.pandemieinc.events.VaccineAvailableEvent;
+import de.tubs.pandemieinc.events.VaccineDeployedEvent;
+import de.tubs.pandemieinc.events.VaccineInDevelopmentEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 /**
-* Testing the ActionHelper class.
-* @see de.tubs.pandemieinc.ActionHelper
-*/
+ * Testing the ActionHelper class.
+ *
+ * @see de.tubs.pandemieinc.ActionHelper
+ */
 class ActionHelperTests {
 
     @Test
@@ -53,13 +47,13 @@ class ActionHelperTests {
         assertEquals(actions.size(), 1);
         assertEquals(actions.get(0), Action.ENDROUND);
 
-
         // Test for VaccineAvailable
         round.points = 5;
         VaccineAvailableEvent event = new VaccineAvailableEvent();
         event.sinceRound = 1;
-        event.pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                      Strength.MIDDLE, Strength.MIDDLE);
+        event.pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         round.events.add(event);
 
         // Expected Result
@@ -97,10 +91,10 @@ class ActionHelperTests {
         assertNotNull(result);
         assertEquals(result.size(), 0);
 
-
         // Test with a Pathogen in a City;
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         OutbreakEvent event = new OutbreakEvent(pathogen, 0.5, 1);
         city.events.add(event);
         result = ActionHelper.getCitiesWithOnePathogen(round);
@@ -126,8 +120,13 @@ class ActionHelperTests {
         assertNull(deadlyPathogen);
 
         // Test with single Pathogen
-        Pathogen testPath1 = new Pathogen("Test 1", Strength.MIDDLE, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen testPath1 =
+                new Pathogen(
+                        "Test 1",
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE);
         pathogens.add(testPath1);
         deadlyPathogen = ActionHelper.findDeadlyPathogen(pathogens);
         assertNotNull(deadlyPathogen);
@@ -135,8 +134,8 @@ class ActionHelperTests {
 
         // Test with multiple Pathogen
         // testPath2 should be preferred over testPath1
-        Pathogen testPath2 = new Pathogen("Test 2", Strength.HIGH, Strength.HIGH,
-                                          Strength.HIGH, Strength.HIGH);
+        Pathogen testPath2 =
+                new Pathogen("Test 2", Strength.HIGH, Strength.HIGH, Strength.HIGH, Strength.HIGH);
         pathogens.add(testPath2);
         deadlyPathogen = ActionHelper.findDeadlyPathogen(pathogens);
         assertNotNull(deadlyPathogen);
@@ -151,8 +150,13 @@ class ActionHelperTests {
         assertNull(fastPathogen);
 
         // Test with single Pathogen
-        Pathogen testPath1 = new Pathogen("Test 1", Strength.MIDDLE, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen testPath1 =
+                new Pathogen(
+                        "Test 1",
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE);
         pathogens.add(testPath1);
         fastPathogen = ActionHelper.findFastlyPathogen(pathogens);
         assertNotNull(fastPathogen);
@@ -160,8 +164,9 @@ class ActionHelperTests {
 
         // Test with multiple Pathogen
         // testPath2 should be preferred over testPath1
-        Pathogen testPath2 = new Pathogen("Test 2", Strength.HIGH, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen testPath2 =
+                new Pathogen(
+                        "Test 2", Strength.HIGH, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         pathogens.add(testPath2);
         fastPathogen = ActionHelper.findFastlyPathogen(pathogens);
         assertNotNull(fastPathogen);
@@ -176,8 +181,13 @@ class ActionHelperTests {
         assertNull(slowPathogen);
 
         // Test with single Pathogen
-        Pathogen testPath1 = new Pathogen("Test 1", Strength.MIDDLE, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen testPath1 =
+                new Pathogen(
+                        "Test 1",
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE);
         pathogens.add(testPath1);
         slowPathogen = ActionHelper.findSlowlyPathogen(pathogens);
         assertNotNull(slowPathogen);
@@ -185,8 +195,9 @@ class ActionHelperTests {
 
         // Test with multiple Pathogen
         // testPath1 should be preferred over testPath2
-        Pathogen testPath2 = new Pathogen("Test 2", Strength.HIGH, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen testPath2 =
+                new Pathogen(
+                        "Test 2", Strength.HIGH, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         pathogens.add(testPath2);
         slowPathogen = ActionHelper.findSlowlyPathogen(pathogens);
         assertNotNull(slowPathogen);
@@ -213,8 +224,13 @@ class ActionHelperTests {
         round.cities.put(city1.name, city1);
 
         // Test with a Pathogen in a City;
-        Pathogen pathogen1 = new Pathogen("Test 1", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen1 =
+                new Pathogen(
+                        "Test 1",
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE);
         round.pathogens.put(pathogen1.name, pathogen1);
         city1.events.add(new OutbreakEvent(pathogen1, 0.5, 1));
         result = ActionHelper.pathogensNotInQuarantine(round);
@@ -226,8 +242,8 @@ class ActionHelperTests {
         City city2 = new City("Test 2");
         city2.events = new ArrayList();
         round.cities.put(city1.name, city1);
-        Pathogen pathogen2 = new Pathogen("Test 2", Strength.LOW, Strength.LOW,
-                                         Strength.LOW, Strength.LOW);
+        Pathogen pathogen2 =
+                new Pathogen("Test 2", Strength.LOW, Strength.LOW, Strength.LOW, Strength.LOW);
         round.pathogens.put(pathogen2.name, pathogen2);
         city2.events.add(new OutbreakEvent(pathogen2, 0.5, 1));
 
@@ -247,8 +263,9 @@ class ActionHelperTests {
         round.outcome = "pending";
         round.cities = new HashMap();
         round.events = new ArrayList();
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         round.events.add(new PathogenEncounteredEvent(1, pathogen));
 
         // Test without VaccineInDevelopmentEvent
@@ -258,7 +275,7 @@ class ActionHelperTests {
         // Test with VaccineInDevelopmentEvent
         round.events.add(new VaccineInDevelopmentEvent(1, 2, pathogen));
         vaccineInDevelopment = ActionHelper.isVaccineInDevelopment(round, pathogen);
-        assertTrue(vaccineInDevelopment);        
+        assertTrue(vaccineInDevelopment);
     }
 
     @Test
@@ -268,8 +285,9 @@ class ActionHelperTests {
         round.outcome = "pending";
         round.cities = new HashMap();
         round.events = new ArrayList();
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         round.events.add(new PathogenEncounteredEvent(1, pathogen));
 
         // Test without VaccineInDevelopmentEvent
@@ -286,8 +304,9 @@ class ActionHelperTests {
     void testIsVaccineDeployed() {
         City city = new City("Test");
         city.events = new ArrayList();
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         city.events.add(new OutbreakEvent(pathogen, 0.5, 1));
 
         // Test without VaccineDeployedEvent
@@ -304,8 +323,9 @@ class ActionHelperTests {
     void testIsCityInfectedWithPathogen() {
         City city = new City("Test");
         city.events = new ArrayList();
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
 
         // Test without Pathogen in City
         boolean isCityInfected = ActionHelper.isCityInfectedWithPathogen(city, pathogen);
@@ -324,8 +344,9 @@ class ActionHelperTests {
         round.outcome = "pending";
         round.cities = new HashMap();
         round.events = new ArrayList();
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         round.events.add(new PathogenEncounteredEvent(1, pathogen));
 
         // Test without MedicationInDevelopmentEvent
@@ -335,7 +356,7 @@ class ActionHelperTests {
         // Test with MedicationInDevelopmentEvent
         round.events.add(new MedicationInDevelopmentEvent(1, 2, pathogen));
         medicationInDevelopment = ActionHelper.isMedicationInDevelopment(round, pathogen);
-        assertTrue(medicationInDevelopment);   
+        assertTrue(medicationInDevelopment);
     }
 
     @Test
@@ -345,8 +366,9 @@ class ActionHelperTests {
         round.outcome = "pending";
         round.cities = new HashMap();
         round.events = new ArrayList();
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         round.events.add(new PathogenEncounteredEvent(1, pathogen));
 
         // Test without MedicationAvailableEvent
@@ -363,8 +385,9 @@ class ActionHelperTests {
     void testIsMedicationDeployed() {
         City city = new City("Test");
         city.events = new ArrayList();
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                         Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         city.events.add(new OutbreakEvent(pathogen, 0.5, 1));
 
         // Test without MedicationDeployedEvent
@@ -380,13 +403,19 @@ class ActionHelperTests {
     @Test
     void testFindHighestPathogenRound() {
         List<City> cities = new ArrayList();
-        Pathogen pathogen1 = new Pathogen("Test 1", Strength.MIDDLE, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen1 =
+                new Pathogen(
+                        "Test 1",
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE);
         // Test without a City
         int rounds = ActionHelper.findHighestPathogenRound(cities, pathogen1);
         assertEquals(rounds, 0);
-        rounds = ActionHelper.findHighestPathogenRound(cities, pathogen1,
-                                                       (city, pathogen) -> (false));
+        rounds =
+                ActionHelper.findHighestPathogenRound(
+                        cities, pathogen1, (city, pathogen) -> (false));
 
         // Test with a city (without the relevant Pathogen)
         City city1 = new City("City 1");
@@ -396,20 +425,25 @@ class ActionHelperTests {
 
         rounds = ActionHelper.findHighestPathogenRound(cities, pathogen1);
         assertEquals(rounds, 0);
-        rounds = ActionHelper.findHighestPathogenRound(cities, pathogen1,
-                                                       (city, pathogen) -> (false));
+        rounds =
+                ActionHelper.findHighestPathogenRound(
+                        cities, pathogen1, (city, pathogen) -> (false));
         assertEquals(rounds, 0);
 
         // Test with relevant Pathogen
         rounds = ActionHelper.findHighestPathogenRound(cities, null);
         assertEquals(rounds, 1);
-        rounds = ActionHelper.findHighestPathogenRound(cities, null,
-                                                       (city, pathogen) -> (false));
+        rounds = ActionHelper.findHighestPathogenRound(cities, null, (city, pathogen) -> (false));
         assertEquals(rounds, 1);
 
         // Test with multiple cities
-        Pathogen pathogen2 = new Pathogen("Test 2", Strength.MIDDLE, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen2 =
+                new Pathogen(
+                        "Test 2",
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE,
+                        Strength.MIDDLE);
         City city2 = new City("City 2");
         city2.events = new ArrayList();
         city2.events.add(new OutbreakEvent(pathogen2, 0.5, 2));
@@ -418,23 +452,25 @@ class ActionHelperTests {
         // Test without restriction => should return 2 from pathogen2
         rounds = ActionHelper.findHighestPathogenRound(cities, null);
         assertEquals(rounds, 2);
-        rounds = ActionHelper.findHighestPathogenRound(cities, null,
-                                                       (city, pathogen) -> (false));
+        rounds = ActionHelper.findHighestPathogenRound(cities, null, (city, pathogen) -> (false));
         assertEquals(rounds, 2);
 
         // Test with filter pathogen2 => should return 1
         rounds = ActionHelper.findHighestPathogenRound(cities, pathogen2);
         assertEquals(rounds, 1);
-        rounds = ActionHelper.findHighestPathogenRound(cities, pathogen2,
-                                                       (city, pathogen) -> (false));
+        rounds =
+                ActionHelper.findHighestPathogenRound(
+                        cities, pathogen2, (city, pathogen) -> (false));
         assertEquals(rounds, 1);
 
         // Test the BiFunc
-        rounds = ActionHelper.findHighestPathogenRound(cities, null,
-                                                       (city, pathogen) -> (city == city2));
+        rounds =
+                ActionHelper.findHighestPathogenRound(
+                        cities, null, (city, pathogen) -> (city == city2));
         assertEquals(rounds, 1);
-        rounds = ActionHelper.findHighestPathogenRound(cities, pathogen1,
-                                                       (city, pathogen) -> (city == city2));
+        rounds =
+                ActionHelper.findHighestPathogenRound(
+                        cities, pathogen1, (city, pathogen) -> (city == city2));
         assertEquals(rounds, 0);
     }
 
@@ -456,8 +492,9 @@ class ActionHelperTests {
         assertEquals(outbreakCities.size(), 0);
 
         // Test with a City, with a Pathogen
-        Pathogen pathogen = new Pathogen("Test", Strength.MIDDLE, Strength.MIDDLE,
-                                          Strength.MIDDLE, Strength.MIDDLE);
+        Pathogen pathogen =
+                new Pathogen(
+                        "Test", Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE, Strength.MIDDLE);
         city1.events.add(new OutbreakEvent(pathogen, 0.5, 1));
         outbreakCities = ActionHelper.getCitiesWithGivenOutbreakRound(1, cities);
         assertNotNull(outbreakCities);

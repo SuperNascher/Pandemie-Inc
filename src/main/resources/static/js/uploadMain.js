@@ -71,10 +71,13 @@ function waitForFinish(threshold, abortCounter) {
             }
             waitForFinish(threshold, abortCounter + 1);
         } else { // finished reading all filed
+            // remove last comma
             json = json.substr(0, json.length-1);
-            if (threshold > 1) {
-                json += ']';
+
+            if (json.substr(0,1) != '[') {
+                json = '[' + json + ']';
             }
+
             json = JSON.parse(json);
             main();
         }
@@ -92,26 +95,34 @@ function waitForFinish(threshold, abortCounter) {
 function readFiles(files) {
     var reader = new FileReader();
     fileCounter = 0;
-    if (files.length > 1) {
-        json = '[';
-    } else {
-        json = '';
-    }
+    json = '';
+    seed = undefined;
     function readFile(index) {
         if (index >= files.length) {
             return;
         }
         var file = files[index];
-        reader.onload = function(e) {
 
-            json += e.target.result;
-            json += ',';
+        if (file.name == 'seed.txt') {
+            reader.onload = function(e) {
+                seed = e.target.result;
+                fileCounter++;
+                readFile(index + 1)
+            }
+            reader.readAsText(file);
 
+        } else if (file.type == 'application/json' && !file.name.includes('_action')){
+            reader.onload = function(e) {
+                json += e.target.result;
+                json += ',';
+                fileCounter++;
+                readFile(index + 1)
+            }
+            reader.readAsText(file);
+        } else {
             fileCounter++;
-
             readFile(index + 1)
         }
-        reader.readAsText(file);
     }
     readFile(0);
 

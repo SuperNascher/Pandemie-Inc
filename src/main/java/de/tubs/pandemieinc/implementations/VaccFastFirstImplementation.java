@@ -79,8 +79,11 @@ public class VaccFastFirstImplementation implements PandemieImpl {
                 int tempCulture;
 
                 Collection<City> cities = round.cities.values();
-                int newestPathogenRound = ActionHelper.findHighestPathogenRound(cities, vaccPath, ActionHelper::isVaccineDeployed);
-                for (City tempC : ActionHelper.getCitiesWithGivenOutbreakRound(newestPathogenRound, cities)) {
+                int newestPathogenRound =
+                        ActionHelper.findHighestPathogenRound(
+                                cities, vaccPath, ActionHelper::isVaccineDeployed);
+                for (City tempC :
+                        ActionHelper.getCitiesWithGivenOutbreakRound(newestPathogenRound, cities)) {
                     if (ActionHelper.isCityInfectedWithPathogen(tempC, vaccPath)
                             || ActionHelper.isVaccineDeployed(tempC, vaccPath)) {
                         continue;

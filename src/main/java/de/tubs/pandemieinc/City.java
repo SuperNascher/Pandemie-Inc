@@ -7,9 +7,7 @@ import de.tubs.pandemieinc.events.BaseEvent;
 import java.util.List;
 import java.util.Map;
 
-/**
-* The city class to represent the city information from the given "JSON round".
-*/
+/** The city class to represent the city information from the given "JSON round". */
 public class City {
     // Fixed attributes of a city
     public String name;
@@ -34,11 +32,10 @@ public class City {
     public City() {}
 
     /**
-    * Return the connections to the other cities as String array for
-    * the city serialization.
-    *
-    * @return The connections of the given City as String array.
-    */
+     * Return the connections to the other cities as String array for the city serialization.
+     *
+     * @return The connections of the given City as String array.
+     */
     @JsonGetter("connections")
     public String[] getConnectionsForJson() {
         return this.connections.values().stream().map(city -> city.name).toArray(String[]::new);

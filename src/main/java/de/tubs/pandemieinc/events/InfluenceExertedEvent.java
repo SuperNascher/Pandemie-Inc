@@ -1,9 +1,8 @@
 package de.tubs.pandemieinc.events;
 
 /**
- * InfluenceExertedEvent - An city event
- * This event indicates that the action "exertInfluence" was used on the
- * given city.
+ * InfluenceExertedEvent - An city event This event indicates that the action "exertInfluence" was
+ * used on the given city.
  */
 public class InfluenceExertedEvent extends SimpleEvent {
 

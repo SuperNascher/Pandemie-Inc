@@ -1,10 +1,71 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Pandemie-Inc</title>
+    <title>Pandemie-Inc: Startseite</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+
+td {
+  text-align: center;
+  vertical-align: middle;
+}
+</style>
 <body>
-	<h1>Hoi</h1>
+	<h1>Pandemie-Inc: Startseite</h1>
+	<h2>Implementationen</h2>
+	<ul>
+		<li>Wir geben offiziell, die "<b>MedDeadlyFirstImplementation</b>" ab.</li>
+		<li>BogoImplementation wählt immer zufällig eine Aktion von den verfügbaren Aktionen aus.</li>
+		<li>EndRoundImplementation wählt immer die Aktion "endRound" aus.</li>
+		<li>Die Beschreibung der anderen Algorithmen befinden sich in der Dokumentation,
+		unter dem Punkt "2. Theoretische Lösung > 2.2 Lösungsansatz > 2.2.2 Strategie".</li>
+	</ul>
+	<p>
+		<table style="width:75%">
+			<tr>
+				<th>Implementation</th>
+				<th>URL</th>
+			</tr>
+			<tr>
+				<td>BogoImplementation</td>
+				<td>/api/bogo</td>
+			</tr>
+			<tr>
+				<td>EndRoundImplementation</td>
+				<td>/api/endRound</td>
+			</tr>
+			<tr>
+				<td>VaccDeadlyFirstImplementation</td>
+				<td>/api/deadlyVacc</td>
+			</tr>
+			<tr>
+				<td>MedDeadlyFirstImplementation</td>
+				<td>/api/deadlyMed</td>
+			</tr>
+			<tr>
+				<td>VaccFastFirstImplementation</td>
+				<td>/api/fastVacc</td>
+			</tr>
+			<tr>
+				<td>MedFastFirstImplementation</td>
+				<td>/api/fastMed</td>
+			</tr>
+			<tr>
+				<td>VaccSlowFirstImplementation</td>
+				<td>/api/slowVacc</td>
+			</tr>
+			<tr>
+				<td>MedSlowFirstImplementation</td>
+				<td>/api/slowMed</td>
+			</tr>
+		</table>
+	</p>
+
+	<h2>Zusatzimplementation</h2>
+	<p><a href="/worldmap">Weltkarte</a></p>
 </body>
 </html>

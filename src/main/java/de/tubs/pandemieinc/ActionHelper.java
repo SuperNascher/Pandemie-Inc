@@ -16,18 +16,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
-/**
-* ActionHelper class to supply
-* functions for the implementations.
-*/
+/** ActionHelper class to supply functions for the implementations. */
 public class ActionHelper {
 
     /**
-    * Get all possible actions from the given round.
-    *
-    * @param round The given round instance
-    * @return List of all Actions that are possible with the given round.
-    */
+     * Get all possible actions from the given round.
+     *
+     * @param round The given round instance
+     * @return List of all Actions that are possible with the given round.
+     */
     public static List<Action> getPossibleActions(Round round) {
         List<Action> possibleActions = new ArrayList<Action>();
 
@@ -53,12 +50,12 @@ public class ActionHelper {
     }
 
     /**
-    * Get the cities with only one pathogen.
-    *
-    * @param round The given round instance
-    * @return A Map, where key is the city and value is Pathogen and
-    *   the cities have only one pathogen.
-    */
+     * Get the cities with only one pathogen.
+     *
+     * @param round The given round instance
+     * @return A Map, where key is the city and value is Pathogen and the cities have only one
+     *     pathogen.
+     */
     public static Map<City, Pathogen> getCitiesWithOnePathogen(Round round) {
         Map<City, Pathogen> singleCityPathogens = new HashMap<City, Pathogen>();
         for (City city : round.cities.values()) {
@@ -82,11 +79,11 @@ public class ActionHelper {
     }
 
     /**
-    * Find the deadliest pathogen from the given pathogens.
-    *
-    * @param pathogens A collection of pathogens.
-    * @return The pathogen, that is the dangerous from the given collection.
-    */
+     * Find the deadliest pathogen from the given pathogens.
+     *
+     * @param pathogens A collection of pathogens.
+     * @return The pathogen, that is the dangerous from the given collection.
+     */
     public static Pathogen findDeadlyPathogen(Iterable<Pathogen> pathogens) {
         float killRating = 10;
         Pathogen deadlyPath = null;
@@ -114,11 +111,11 @@ public class ActionHelper {
     }
 
     /**
-    * Find the fastes pathogen from the given pathogens.
-    *
-    * @param pathogens A collection of pathogens.
-    * @return The pathogen, that is the fastes from the given collection.
-    */
+     * Find the fastes pathogen from the given pathogens.
+     *
+     * @param pathogens A collection of pathogens.
+     * @return The pathogen, that is the fastes from the given collection.
+     */
     public static Pathogen findFastlyPathogen(Iterable<Pathogen> pathogens) {
         float spreadRating = 10;
         Pathogen fastPath = null;
@@ -145,11 +142,11 @@ public class ActionHelper {
     }
 
     /**
-    * Find the slowest pathogen from the given pathogens.
-    *
-    * @param pathogens A collection of pathogens.
-    * @return The pathogen, that is the slowest from the given collection.
-    */
+     * Find the slowest pathogen from the given pathogens.
+     *
+     * @param pathogens A collection of pathogens.
+     * @return The pathogen, that is the slowest from the given collection.
+     */
     public static Pathogen findSlowlyPathogen(Iterable<Pathogen> pathogens) {
 
         float spreadRating = 10;
@@ -177,11 +174,11 @@ public class ActionHelper {
     }
 
     /**
-    * Get all pathogens that are not in quarantine.
-    *
-    * @param round The given round instance
-    * @return A list of pathogens, where the pathogens are not "in quarantine".
-    */
+     * Get all pathogens that are not in quarantine.
+     *
+     * @param round The given round instance
+     * @return A list of pathogens, where the pathogens are not "in quarantine".
+     */
     public static List<Pathogen> pathogensNotInQuarantine(Round round) {
         List<Pathogen> acutePathogens = new ArrayList<>();
         for (Pathogen tempP : round.pathogens.values()) {
@@ -207,12 +204,12 @@ public class ActionHelper {
     }
 
     /**
-    * Check, if a vaccine for the given pathogen is in development.
-    *
-    * @param round The given round instance.
-    * @param pathogen The pathogen for the vaccine.
-    * @return True, if the vaccine for the given pathogen is in development, otherwise false.
-    */
+     * Check, if a vaccine for the given pathogen is in development.
+     *
+     * @param round The given round instance.
+     * @param pathogen The pathogen for the vaccine.
+     * @return True, if the vaccine for the given pathogen is in development, otherwise false.
+     */
     public static boolean isVaccineInDevelopment(Round round, Pathogen pathogen) {
         for (BaseEvent event : round.events) {
             if (event.eventName == VaccineInDevelopmentEvent.eventName) {
@@ -225,12 +222,12 @@ public class ActionHelper {
     }
 
     /**
-    * Check, if a vaccine for the given pathogen is available.
-    *
-    * @param round The given round instance.
-    * @param pathogen The pathogen for the vaccine.
-    * @return True, if the vaccine for the given pathogen is available, otherwise false.
-    */
+     * Check, if a vaccine for the given pathogen is available.
+     *
+     * @param round The given round instance.
+     * @param pathogen The pathogen for the vaccine.
+     * @return True, if the vaccine for the given pathogen is available, otherwise false.
+     */
     public static boolean isVaccineAvailable(Round round, Pathogen pathogen) {
         for (BaseEvent event : round.events) {
             if (event.eventName == VaccineAvailableEvent.eventName) {
@@ -243,13 +240,12 @@ public class ActionHelper {
     }
 
     /**
-    * Check, if a vaccine for the given pathogen is deployed in the city.
-    *
-    * @param city The given city instance.
-    * @param pathogen The pathogen for the vaccine.
-    * @return True, if the vaccine for the given pathogen is deployed in the city,
-    *   otherwise false.
-    */
+     * Check, if a vaccine for the given pathogen is deployed in the city.
+     *
+     * @param city The given city instance.
+     * @param pathogen The pathogen for the vaccine.
+     * @return True, if the vaccine for the given pathogen is deployed in the city, otherwise false.
+     */
     public static boolean isVaccineDeployed(City city, Pathogen pathogen) {
         for (BaseEvent event : city.events) {
             if (event.eventName == VaccineDeployedEvent.eventName) {
@@ -262,13 +258,12 @@ public class ActionHelper {
     }
 
     /**
-    * Check, if the given city has the pathogen (infected).
-    *
-    * @param city The given city instance.
-    * @param pathogen The given pathogen instance.
-    * @return True, if the given city is infected with the given pathogen,
-    *   otherwise false.
-    */
+     * Check, if the given city has the pathogen (infected).
+     *
+     * @param city The given city instance.
+     * @param pathogen The given pathogen instance.
+     * @return True, if the given city is infected with the given pathogen, otherwise false.
+     */
     public static boolean isCityInfectedWithPathogen(City city, Pathogen pathogen) {
         for (BaseEvent event : city.events) {
             if (event.eventName == OutbreakEvent.eventName) {
@@ -281,12 +276,12 @@ public class ActionHelper {
     }
 
     /**
-    * Check, if a medication for the given pathogen is in development.
-    *
-    * @param round The given round instance.
-    * @param pathogen The pathogen for the medication.
-    * @return True, if the medication for the given pathogen is in development, otherwise false.
-    */
+     * Check, if a medication for the given pathogen is in development.
+     *
+     * @param round The given round instance.
+     * @param pathogen The pathogen for the medication.
+     * @return True, if the medication for the given pathogen is in development, otherwise false.
+     */
     public static boolean isMedicationInDevelopment(Round round, Pathogen pathogen) {
         for (BaseEvent event : round.events) {
             if (event.eventName == MedicationInDevelopmentEvent.eventName) {
@@ -299,12 +294,12 @@ public class ActionHelper {
     }
 
     /**
-    * Check, if a medication for the given pathogen is available.
-    *
-    * @param round The given round instance.
-    * @param pathogen The pathogen for the medication.
-    * @return True, if the medication for the given pathogen is available, otherwise false.
-    */
+     * Check, if a medication for the given pathogen is available.
+     *
+     * @param round The given round instance.
+     * @param pathogen The pathogen for the medication.
+     * @return True, if the medication for the given pathogen is available, otherwise false.
+     */
     public static boolean isMedicationAvailable(Round round, Pathogen pathogen) {
         for (BaseEvent event : round.events) {
             if (event.eventName == MedicationAvailableEvent.eventName) {
@@ -317,13 +312,13 @@ public class ActionHelper {
     }
 
     /**
-    * Check, if a medication for the given pathogen is deployed in the city.
-    *
-    * @param city The given city instance.
-    * @param pathogen The pathogen for the medication.
-    * @return True, if the medication for the given pathogen is deployed in the city,
-    *   otherwise false.
-    */
+     * Check, if a medication for the given pathogen is deployed in the city.
+     *
+     * @param city The given city instance.
+     * @param pathogen The pathogen for the medication.
+     * @return True, if the medication for the given pathogen is deployed in the city, otherwise
+     *     false.
+     */
     public static boolean isMedicationDeployed(City city, Pathogen pathogen) {
         for (BaseEvent event : city.events) {
             if (event.eventName == MedicationDeployedEvent.eventName) {
@@ -336,14 +331,13 @@ public class ActionHelper {
     }
 
     /**
-    * Find the highest amount of rounds that a pathogen has in the given
-    * city collection.
-    *
-    * @param cities A given collection of cities.
-    * @param pathogen The given pathogen.
-    * @return The highest round counter that the given pathogen has in one of the cities
-    *   in the given city collection.
-    */
+     * Find the highest amount of rounds that a pathogen has in the given city collection.
+     *
+     * @param cities A given collection of cities.
+     * @param pathogen The given pathogen.
+     * @return The highest round counter that the given pathogen has in one of the cities in the
+     *     given city collection.
+     */
     public static int findHighestPathogenRound(Iterable<City> cities, Pathogen pathogen) {
         int infectionRound = 0;
         for (City tempC : cities) {
@@ -363,20 +357,21 @@ public class ActionHelper {
     }
 
     /**
-    * Find the highest amount of rounds that a pathogen has in the given
-    * city collection.
-    *
-    * @param cities A given collection of cities.
-    * @param pathogen The given pathogen.
-    * @param cityPredicate Filter function to restrict cities (e.g. VaccineEvents, MedicationEvents).
-    *   The city will be skipped, if the cityPredicate returns true.
-    * @return The highest round counter that the given pathogen has in one of the cities
-    *   and the cityPredicate returned false for that, in the given city collection.
-    */
-    public static int findHighestPathogenRound(Iterable<City> cities, Pathogen pathogen, BiPredicate<City, Pathogen> cityPredicate) {
+     * Find the highest amount of rounds that a pathogen has in the given city collection.
+     *
+     * @param cities A given collection of cities.
+     * @param pathogen The given pathogen.
+     * @param cityPredicate Filter function to restrict cities (e.g. VaccineEvents,
+     *     MedicationEvents). The city will be skipped, if the cityPredicate returns true.
+     * @return The highest round counter that the given pathogen has in one of the cities and the
+     *     cityPredicate returned false for that, in the given city collection.
+     */
+    public static int findHighestPathogenRound(
+            Iterable<City> cities, Pathogen pathogen, BiPredicate<City, Pathogen> cityPredicate) {
         int infectionRound = 0;
         for (City tempC : cities) {
-            if (isCityInfectedWithPathogen(tempC, pathogen) || cityPredicate.test(tempC, pathogen)) {
+            if (isCityInfectedWithPathogen(tempC, pathogen)
+                    || cityPredicate.test(tempC, pathogen)) {
                 continue;
             }
             for (BaseEvent tempE : tempC.events) {
@@ -392,13 +387,13 @@ public class ActionHelper {
     }
 
     /**
-    * Find the cities, where the round of the OutbreakEvent is the same as the given round.
-    *
-    * @param round The round counter for the pathogen
-    * @param cities A given collection of cities.
-    * @return A list of cities, where the round of the OutbreakEvent is the same
-    *   as the given round.
-    */
+     * Find the cities, where the round of the OutbreakEvent is the same as the given round.
+     *
+     * @param round The round counter for the pathogen
+     * @param cities A given collection of cities.
+     * @return A list of cities, where the round of the OutbreakEvent is the same as the given
+     *     round.
+     */
     public static List<City> getCitiesWithGivenOutbreakRound(int round, Iterable<City> cities) {
         List<City> newCities = new ArrayList<>();
         for (City tempC : cities) {

@@ -3,9 +3,8 @@ package de.tubs.pandemieinc.events;
 import de.tubs.pandemieinc.Pathogen;
 
 /**
- * MedicationInDevelopmentEvent - An global event
- * This event indicates that the medication for the given pathogen
- * is indevelopment.
+ * MedicationInDevelopmentEvent - An global event This event indicates that the medication for the
+ * given pathogen is indevelopment.
  */
 public class MedicationInDevelopmentEvent extends InDevelopmentEvent {
 

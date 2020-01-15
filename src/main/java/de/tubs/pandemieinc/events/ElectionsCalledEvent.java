@@ -3,8 +3,7 @@ package de.tubs.pandemieinc.events;
 /**
  * ElectionsCalledEvent - City event
  *
- * This event indicates that the action "callElections"
- * was executed on the given city.
+ * <p>This event indicates that the action "callElections" was executed on the given city.
  */
 public class ElectionsCalledEvent extends SimpleEvent {
 

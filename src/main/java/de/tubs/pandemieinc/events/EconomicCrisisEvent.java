@@ -1,5 +1,10 @@
 package de.tubs.pandemieinc.events;
 
+/**
+ * EconomicCrisisEvent - Global event
+ *
+ * <p>This event indicates that ecenomy on random cities will decrease on each round.
+ */
 public class EconomicCrisisEvent extends SimpleEvent {
 
     public static final String eventName = "economicCrisis";

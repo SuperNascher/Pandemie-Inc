@@ -1,9 +1,8 @@
 package de.tubs.pandemieinc.events;
 
 /**
- * HygienicMeasuresAppliedEvent - A city event
- * This event indicates that the action "applyHygienicMeasures" was used on the
- * given city.
+ * HygienicMeasuresAppliedEvent - A city event This event indicates that the action
+ * "applyHygienicMeasures" was used on the given city.
  */
 public class HygienicMeasuresAppliedEvent extends SimpleEvent {
 

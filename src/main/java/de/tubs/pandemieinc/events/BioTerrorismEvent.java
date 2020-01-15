@@ -5,8 +5,7 @@ import de.tubs.pandemieinc.Pathogen;
 /**
  * BioTerrorismEvent - Global event
  *
- * This event indicates that a new Pathogen is introduced
- * as biological weapon.
+ * <p>This event indicates that a new Pathogen is introduced as biological weapon.
  */
 public class BioTerrorismEvent extends PathogenEvent {
 

@@ -32,6 +32,7 @@ function createUI() {
     sliderValueOutput = document.getElementById('sliderValue');
 
     // set slider range and value
+    slider.min = firstRound;
     slider.max = lastRound;
     slider.value = round;
 
@@ -40,6 +41,14 @@ function createUI() {
         sliderValueOutput.firstChild.remove();
     }
     sliderValueOutput.appendChild(document.createTextNode(round));
+
+    // show seed if available
+    if (seed) {
+        seedCardItem = document.createElement('div');
+        seedCardItem.classList.add('card-footer', 'text-muted');
+        seedCardItem.appendChild(document.createTextNode('Seed: ' + seed));
+        document.getElementById('settingsCard').appendChild(seedCardItem);
+    }
 
     // show pathogen data and settings cards
     document.getElementById('dataAndSettings').classList.remove('d-none');
@@ -83,13 +92,13 @@ function updateUI() {
 
     // show outcome in round card
     var outcomeBadge = document.getElementById('outcome');
-    outcomeBadge.innerText = json[round-1].outcome;
+    outcomeBadge.innerText = json[round].outcome;
     outcomeBadge.classList.add('badge', 'float-right');
 
-    if (json[round-1].outcome == 'win') {
+    if (json[round].outcome == 'win') {
         outcomeBadge.classList.remove('badge-warning');
         outcomeBadge.classList.add('badge-success');
-    } else if (json[round-1].outcome == 'loss') {
+    } else if (json[round].outcome == 'loss') {
         outcomeBadge.classList.remove('badge-warning');
         outcomeBadge.classList.add('badge-danger');
     } else {

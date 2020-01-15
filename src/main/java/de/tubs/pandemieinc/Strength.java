@@ -2,10 +2,7 @@ package de.tubs.pandemieinc;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-/**
-* Enum to map the "strength" or "power" of a
-* given attribute (City, Pathogen)
-*/
+/** Enum to map the "strength" or "power" of a given attribute (City, Pathogen) */
 public enum Strength {
     VERY_HIGH(2, "++"),
     HIGH(1, "+"),
@@ -22,11 +19,11 @@ public enum Strength {
     }
 
     /**
-    * Parse the Strength from the given String.
-    *
-    * @param value The strength value as String.
-    * @return The parsed Strength enum.
-    */
+     * Parse the Strength from the given String.
+     *
+     * @param value The strength value as String.
+     * @return The parsed Strength enum.
+     */
     public static Strength fromString(String value) {
         for (Strength strength : Strength.values()) {
             if (value.equals(strength.representation)) {
@@ -38,9 +35,7 @@ public enum Strength {
         throw new IllegalArgumentException(String.format(formatErrorMsg, value));
     }
 
-    /**
-    * Print the representation for "toString()".
-    */
+    /** Print the representation for "toString()". */
     @Override
     @JsonValue
     public String toString() {

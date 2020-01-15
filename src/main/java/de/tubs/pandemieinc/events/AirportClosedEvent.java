@@ -3,8 +3,7 @@ package de.tubs.pandemieinc.events;
 /**
  * AirportClosedEvent - City event
  *
- * This event indicates that the airport of the given
- * city is closed.
+ * <p>This event indicates that the airport of the given city is closed.
  */
 public class AirportClosedEvent extends TimedEvent {
 

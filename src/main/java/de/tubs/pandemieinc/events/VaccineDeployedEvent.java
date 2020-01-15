@@ -3,9 +3,8 @@ package de.tubs.pandemieinc.events;
 import de.tubs.pandemieinc.Pathogen;
 
 /**
- * VaccineDeployedEvent - A citry event
- * This event indicates that the vaccine for the given
- * Pathogen was deployed on the given city.
+ * VaccineDeployedEvent - A citry event This event indicates that the vaccine for the given Pathogen
+ * was deployed on the given city.
  */
 public class VaccineDeployedEvent extends PathogenEvent {
 

@@ -15,9 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
-* Pathogen class to represent the "JSON round" structure.
-*/
+/** Pathogen class to represent the "JSON round" structure. */
 @JsonDeserialize(using = RoundDeserializer.class)
 public class Round {
 
@@ -33,19 +31,16 @@ public class Round {
     @JsonIgnore public Map<String, Pathogen> pathogens;
 }
 
-/**
-* Deserializer class for Round.
-*/
+/** Deserializer class for Round. */
 class RoundDeserializer extends JsonDeserializer<Round> {
 
     /**
-    * Custom parser for round class.
-    *
-    * @param jsonParser The given parser instance from jackson with the
-    *   parsed JSON (round object).
-    * @param deserializationContext The context with addional settings or reuseable objects.
-    * @return The parsed round instance.
-    */
+     * Custom parser for round class.
+     *
+     * @param jsonParser The given parser instance from jackson with the parsed JSON (round object).
+     * @param deserializationContext The context with addional settings or reuseable objects.
+     * @return The parsed round instance.
+     */
     @Override
     public Round deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
             throws IOException, JsonProcessingException {
@@ -98,8 +93,7 @@ class RoundDeserializer extends JsonDeserializer<Round> {
             for (JsonNode eventNode : cityEventsEntry.getValue()) {
                 BaseEvent event = eventFactory.parseFromJsonNode(eventNode);
                 if (event == null) {
-                    throw new JsonParseException(jsonParser,
-                        "Could not parse given event object.");
+                    throw new JsonParseException(jsonParser, "Could not parse given event object.");
                 }
                 city.events.add(event);
             }
@@ -120,10 +114,10 @@ class RoundDeserializer extends JsonDeserializer<Round> {
         round.events = new ArrayList<BaseEvent>();
         for (JsonNode eventNode : tree.path("events")) {
             BaseEvent event = eventFactory.parseFromJsonNode(eventNode);
-                if (event == null) {
-                    throw new JsonParseException(jsonParser,
-                        "Could not parse given city event object.");
-                }
+            if (event == null) {
+                throw new JsonParseException(
+                        jsonParser, "Could not parse given city event object.");
+            }
             round.events.add(event);
         }
 

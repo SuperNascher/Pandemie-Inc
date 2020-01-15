@@ -2,12 +2,18 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
+
+        <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+
+        <script src="js/d3.min.js"></script>
+        <script src="js/topojson.min.js"></script>
+        <script src="js/datamaps.world.min.js"></script>
+        <script src="js/jquery.min.js"></script>
+
     </head>
     <body>
-        <div id="map" style="position: relative; width: 99vw; height: 43vw; margin: auto; margin-bottom: -3vw;">
-
+        <div id="map">
             <div id="drop-area" class="jumbotron col-6 offset-3 mt-5">
                 <form class="my-form">
                     <p>Drop a game here to display it on a map or</p>
@@ -18,7 +24,7 @@
         </div>
 
         <div class="row mr-0 d-none" id="dataAndSettings">
-            <div class="col-11" style="margin:auto;">
+            <div class="col-11">
                 <div class="row">
                     <div class="col-8 px-2">
                         <div class="row" id="pathogenCards">
@@ -26,13 +32,13 @@
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="card">
+                        <div class="card" id="settingsCard">
                             <div class="card-header">
                                 Round: <span id="sliderValue"></span> <span id="outcome"></span>
                             </div> 
                             <div class="card-body">
                                 <div class="form-group">
-                                    <input type="range" id="roundSlider" class="custom-range" name="round" min="1">
+                                    <input type="range" id="roundSlider" class="custom-range" name="round">
                                 </div>            
                             </div>
                         </div>
@@ -40,15 +46,13 @@
                 </div>
             </div>
         </div>
-        <script src="js/d3.min.js"></script>
-        <script src="js/topojson.min.js"></script>
-        <script src="js/datamaps.world.min.js"></script>
-        <script src="js/jquery.js"></script>
+
         <script src="js/mapEventListener.js"></script>
         <script src="js/mapUi.js"></script>
         <script src="js/mapMain.js"></script>
         <script src="js/uploadMain.js"></script>
         <script src="js/uploadEventListener.js"></script>
+
     </body>
 </html>
 

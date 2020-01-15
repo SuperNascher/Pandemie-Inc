@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
-* Possible Actions mapped in an enum.
-* Contains the base and round cost and the JSON interpretation string.
-*/
+ * Possible Actions mapped in an enum. Contains the base and round cost and the JSON interpretation
+ * string.
+ */
 public enum Action {
     ENDROUND("endRound", 0, 0),
     PUTUNDERQUARANTINE("putUnderQuarantine", 20, 10),
@@ -34,11 +34,10 @@ public enum Action {
     }
 
     /**
-    * Get all actions, that does not have a dependency to an event.
-    *
-    * @return Action array with all possible actions, that does not have
-    *   any required event.
-    */
+     * Get all actions, that does not have a dependency to an event.
+     *
+     * @return Action array with all possible actions, that does not have any required event.
+     */
     public static Action[] nonDependentActions() {
         Action[] actions = {
             Action.APPLYHYGIENICMEASURES,
@@ -56,11 +55,11 @@ public enum Action {
     }
 
     /**
-    * Get all actions, that have a event dependency.
-    *
-    * @return A Map, where the key is the required event name (as JSON String)
-    *   and the value is the Action enum.
-    */
+     * Get all actions, that have a event dependency.
+     *
+     * @return A Map, where the key is the required event name (as JSON String) and the value is the
+     *     Action enum.
+     */
     public static Map<String, Action> dependentActions() {
         Map<String, Action> actions = new HashMap<String, Action>();
         actions.put(VaccineAvailableEvent.eventName, DEPLOYVACCINE);

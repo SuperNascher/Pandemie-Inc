@@ -1,8 +1,6 @@
 package de.tubs.pandemieinc.events;
 
-/**
-* Base class for events with a round integer.
-*/
+/** Base class for events with a round integer. */
 public abstract class SimpleEvent extends BaseEvent {
 
     public SimpleEvent(String eventName) {

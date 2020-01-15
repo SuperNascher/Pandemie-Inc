@@ -3,8 +3,7 @@ package de.tubs.pandemieinc.events;
 /**
  * CampaignLaunchedEvent - City event
  *
- * This event indicates that the action "launchCampaign"
- * was executed on the given city.
+ * <p>This event indicates that the action "launchCampaign" was executed on the given city.
  */
 public class CampaignLaunchedEvent extends SimpleEvent {
 
