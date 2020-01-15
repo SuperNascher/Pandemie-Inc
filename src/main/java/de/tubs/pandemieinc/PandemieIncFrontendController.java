@@ -20,4 +20,12 @@ public class PandemieIncFrontendController {
     public String index() {
         return "index.html";
     }
+
+    /**
+    * World map for the game
+    */
+    @RequestMapping("/worldmap")
+    public String worldmap() {
+        return "worldmap.html";
+    }
 }

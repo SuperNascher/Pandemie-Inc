@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class MedSlowFirstImplementation implements PandemieImpl {
 
-    public Round round;
     final int quarantineRoundlength = 2;
 
     public MedSlowFirstImplementation() {}
