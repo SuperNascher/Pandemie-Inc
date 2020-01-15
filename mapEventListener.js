@@ -19,14 +19,11 @@ function startEventListeners() {
  * @param {Object} e KeyboardEvent.
  */
 function moveSliderByKey(e) {
-    var newRound = round;
     if (e.key == 'ArrowLeft') {
-        newRound--;
-        slider.value = newRound;
+        slider.stepDown();
         onSliderChange();
     } else if (e.key == 'ArrowRight') {
-        newRound++;
-        slider.value = newRound;
+        slider.stepUp();
         onSliderChange();
     }
 }
@@ -53,11 +50,20 @@ function onSliderFocus(){
  * Update UI when slider has been changed.
  */
 function onSliderChange() {
-    round = slider.value;
-    location.hash = '#' + round;
-    sliderValueOutput.firstChild.remove();
-    sliderValueOutput.appendChild(document.createTextNode(round));
-    updateUI(round);
+    if (slider.value in json) { // round is available
+        round = slider.value;
+        location.hash = '#' + round;
+        sliderValueOutput.firstChild.remove();
+        sliderValueOutput.appendChild(document.createTextNode(round));
+        updateUI(round);
+    } else { // round is not available
+        if (round > parseInt(slider.value)) {
+            slider.stepDown();
+        } else {
+            slider.stepUp();
+        }
+        onSliderChange();
+    }
 }
 
 

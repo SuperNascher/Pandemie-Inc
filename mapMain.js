@@ -22,12 +22,22 @@ function prepareGlobalVars() {
     // global value which contains the current round
     round = parseInt(location.hash.substr(1));
 
+    // global value which contains the first round
+    firstRound = json[0].round;
+
     // global value which contains the last round
-    lastRound = json.length;
+    lastRound = json[json.length - 1].round;
+
+    // adapt array index to round
+    tmpJson = [];
+    for (let i in json) {
+        tmpJson[json[i].round] = json[i];
+    }
+    json = tmpJson;
 
     // ensure: 1 <= round <= lastRound
-    if (isNaN(round) || round > lastRound || round < 1) {
-        round = 1;
+    if (isNaN(round) || round < firstRound || round > lastRound || !json[round]) {
+        round = firstRound;
         location.hash = '#' + round;
     }
 
@@ -45,7 +55,7 @@ function prepareGlobalVars() {
 
     // global map which maps all city names to their coordinates (0 = latitude, 1 = longitude)
     cityCoords = new Map();
-    for (let city of Object.values(json[0].cities)) {
+    for (let city of Object.values(json[firstRound].cities)) {
         cityCoords.set(city.name, [city.latitude, city.longitude]);
     }
 }
@@ -59,13 +69,14 @@ function analyzeGame() {
     // prepare colors for pathogens
     var colors = ['red', 'blue', 'yellow', 'pink', 'green', 'white'];
 
-    for (var i = 1; i <= lastRound; i++) { // for each round in game
+    // for (var i = 1; i <= lastRound; i++) { // for each round in game
+    for (let i in json) {
         bubbles[i] = [];
         var infectedCities = {};
         var infectedHumans = {};
         var killedHumans = {};
 
-        for (let city of Object.values(json[i-1].cities)) { // for each city in round
+        for (let city of Object.values(json[i].cities)) { // for each city in round
             var bubble = {};
 
             // set basic bubble values
@@ -115,8 +126,8 @@ function analyzeGame() {
                         }
 
                         // count killed humans
-                        if (i > 1) {
-                            killedHumans[event.pathogen.name] = json[i-2].cities[city.name].population - json[i-1].cities[city.name].population;
+                        if (i > firstRound) {
+                            killedHumans[event.pathogen.name] = json[prevRound].cities[city.name].population - json[i].cities[city.name].population;
                         }
 
                     }
@@ -137,6 +148,9 @@ function analyzeGame() {
         pathogens[i].cih = infectedHumans;
         // current killed humans
         pathogens[i].ckh = killedHumans;
+
+        // save index of this round as previous round
+        prevRound = i;
     }
 }
 
@@ -157,11 +171,13 @@ function pathogensWrapUp() {
             if (typeof pathogens[i].ckh[p] == 'undefined') {
                 pathogens[i].ckh[p] = 0;
             }
-            if (i > 1) {
-                pathogens[i].tkh[p] = pathogens[i-1].tkh[p] + pathogens[i].ckh[p];
+            if (i > firstRound) {
+                pathogens[i].tkh[p] = pathogens[prevRound].tkh[p] + pathogens[i].ckh[p];
             } else {
                 pathogens[i].tkh[p] = 0;
             }
         }
+        // save index of this round as previous round
+        prevRound = i;
     }
 }
