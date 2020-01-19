@@ -11,6 +11,7 @@ import de.tubs.pandemieinc.implementations.VaccDeadlyFirstImplementation;
 import de.tubs.pandemieinc.implementations.VaccFastFirstImplementation;
 import de.tubs.pandemieinc.implementations.VaccSlowFirstImplementation;
 import de.tubs.pandemieinc.implementations.TrieforceKIImplementation;
+import de.tubs.pandemieinc.implementations.TrieforceKIImplementation2;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -141,6 +142,19 @@ public class PandemieIncAPIController {
     @RequestMapping(value = "/triforce", method = RequestMethod.POST, produces = "application/json")
     public String trieforcekiImplementation(@RequestBody Round round) {
         TrieforceKIImplementation impl = new TrieforceKIImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+    
+    /**
+     * TrieforceKIImplementation2, an implementation that selects MedDeadlyFirstImplementation,
+     * MedFastFirstImplementation or MedSlowFirstImplementation depending on the Pathogens.
+     *
+     * <p>Available on /triforce (e.g. localhost:8080/api/triforce)</p>
+     */
+    @RequestMapping(value = "/triforce2", method = RequestMethod.POST, produces = "application/json")
+    public String trieforcekiImplementation2(@RequestBody Round round) {
+        TrieforceKIImplementation2 impl = new TrieforceKIImplementation2();
         String action = impl.selectAction(round);
         return action;
     }
