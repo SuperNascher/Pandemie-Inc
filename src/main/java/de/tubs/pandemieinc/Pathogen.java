@@ -1,14 +1,17 @@
 package de.tubs.pandemieinc;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.lang.Comparable;
+import java.util.List;
+
 
 /** Pathogen class to represent a Pathogen from the given "JSON round". */
-public class Pathogen {
+public class Pathogen implements Comparable<Pathogen> {
     public final String name;
     public final Strength infectivity;
-    public final Strength mobility;
-    public final Strength duration;
     public final Strength lethality;
+    public final Strength duration;
+    public final Strength mobility;
 
     Pathogen(
             String name,
@@ -58,5 +61,48 @@ public class Pathogen {
     @Override
     public String toString() {
         return String.format("Pathogen (%s)", this.name);
+    }
+
+    @Override
+    public int compareTo(Pathogen o) {
+        // Compare to infectivity
+        int compareValue = this.infectivity.compareTo(o.infectivity);
+        if (compareValue != 0) {
+            return compareValue;
+        }
+
+        // Compare to lethality
+        compareValue = this.lethality.compareTo(o.lethality);
+        if (compareValue != 0) {
+            return compareValue;
+        }
+
+        // Compare to duration
+        compareValue = this.duration.compareTo(o.duration);
+        if (compareValue != 0) {
+            return compareValue;
+        }
+
+        // Compare to mobility
+        compareValue = this.mobility.compareTo(o.mobility);
+        return compareValue;
+    }
+
+    public static float[] pathogensToNetwork(List<Pathogen> pathogens) {
+
+        float[] array = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        int i = 0;
+        for(Pathogen pathogen : pathogens) {
+            array[i] = pathogen.infectivity.strengthToNetwork();
+            i = i + 1;
+            array[i] = pathogen.lethality.strengthToNetwork();
+            i = i + 1;
+            array[i] = pathogen.duration.strengthToNetwork();
+            i = i + 1;
+            array[i] = pathogen.mobility.strengthToNetwork();
+            i = i + 1;
+        }
+        return array;
     }
 }

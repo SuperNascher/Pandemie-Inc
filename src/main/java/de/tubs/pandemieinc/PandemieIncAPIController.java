@@ -10,6 +10,7 @@ import de.tubs.pandemieinc.implementations.PandemieImpl;
 import de.tubs.pandemieinc.implementations.VaccDeadlyFirstImplementation;
 import de.tubs.pandemieinc.implementations.VaccFastFirstImplementation;
 import de.tubs.pandemieinc.implementations.VaccSlowFirstImplementation;
+import de.tubs.pandemieinc.implementations.TrieforceKIImplementation;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ public class PandemieIncAPIController {
     /**
      * BogoImplementation, a simple implementation that randomly decides a "possible" action.
      *
-     * <p>Available on /bogo (e.g. localhost:8080/api/bogo)
+     * <p>Available on /bogo (e.g. localhost:8080/api/bogo)</p>
      */
     @RequestMapping(value = "/bogo", method = RequestMethod.POST, produces = "application/json")
     public String bogoImplementation(@RequestBody Round round) {
@@ -38,7 +39,7 @@ public class PandemieIncAPIController {
      * VaccDeadlyFirstImplementation, an implementation that tries to defeat the deadly pathogen at
      * beginning and then develops vaccines for the other pathogens.
      *
-     * <p>Available on /deadlyVacc (e.g. localhost:8080/api/deadlyVacc)
+     * <p>Available on /deadlyVacc (e.g. localhost:8080/api/deadlyVacc)</p>
      */
     @RequestMapping(
             value = "/deadlyVacc",
@@ -54,7 +55,7 @@ public class PandemieIncAPIController {
      * MedDeadlyFirstImplementation, an implementation that tries to defeat the deadly pathogen at
      * beginning and then develops medications for the other pathogens.
      *
-     * <p>Available on /deadlyMed (e.g. localhost:8080/api/deadlyMed)
+     * <p>Available on /deadlyMed (e.g. localhost:8080/api/deadlyMed)</p>
      */
     @RequestMapping(
             value = "/deadlyMed",
@@ -70,7 +71,7 @@ public class PandemieIncAPIController {
      * VaccFastFirstImplementation, an implementation that tries to defeat the fastest pathogen at
      * beginning and then develops vaccines for the other pathogens.
      *
-     * <p>Available on /fastVacc (e.g. localhost:8080/api/fastVacc)
+     * <p>Available on /fastVacc (e.g. localhost:8080/api/fastVacc)</p>
      */
     @RequestMapping(value = "/fastVacc", method = RequestMethod.POST, produces = "application/json")
     public String fastVaccImplementation(@RequestBody Round round) {
@@ -83,7 +84,7 @@ public class PandemieIncAPIController {
      * MedFastFirstImplementation, an implementation that tries to defeat the fastest pathogen at
      * beginning and then develops medications for the other pathogens.
      *
-     * <p>Available on /fastMed (e.g. localhost:8080/api/fastMed)
+     * <p>Available on /fastMed (e.g. localhost:8080/api/fastMed)</p>
      */
     @RequestMapping(value = "/fastMed", method = RequestMethod.POST, produces = "application/json")
     public String fastMedImplementation(@RequestBody Round round) {
@@ -96,7 +97,7 @@ public class PandemieIncAPIController {
      * VaccSlowFirstImplementation, an implementation that tries to defeat the slowest pathogen at
      * beginning and then develops vaccines for the other pathogens.
      *
-     * <p>Available on /slowVacc (e.g. localhost:8080/api/slowVacc)
+     * <p>Available on /slowVacc (e.g. localhost:8080/api/slowVacc)</p>
      */
     @RequestMapping(value = "/slowVacc", method = RequestMethod.POST, produces = "application/json")
     public String slowVaccImplementation(@RequestBody Round round) {
@@ -109,7 +110,7 @@ public class PandemieIncAPIController {
      * MedSlowFirstImplementation, an implementation that tries to defeat the slowest pathogen at
      * beginning and then develops medications for the other pathogens.
      *
-     * <p>Available on /slowMed (e.g. localhost:8080/api/slowMed)
+     * <p>Available on /slowMed (e.g. localhost:8080/api/slowMed)</p>
      */
     @RequestMapping(value = "/slowMed", method = RequestMethod.POST, produces = "application/json")
     public String slowMedImplementation(@RequestBody Round round) {
@@ -122,11 +123,24 @@ public class PandemieIncAPIController {
      * EndRoundImplementation, an implementation that only returns "endRound" for learning and
      * documentation purposes.
      *
-     * <p>Available on /endRound (e.g. localhost:8080/api/endRound)
+     * <p>Available on /endRound (e.g. localhost:8080/api/endRound)</p>
      */
     @RequestMapping(value = "/endRound", method = RequestMethod.POST, produces = "application/json")
     public String endRoundImplementation(@RequestBody Round round) {
         EndRoundImplementation impl = new EndRoundImplementation();
+        String action = impl.selectAction(round);
+        return action;
+    }
+
+    /**
+     * TrieforceKIImplementation, an implementation that selects MedDeadlyFirstImplementation,
+     * MedFastFirstImplementation or MedSlowFirstImplementation depending on the Pathogens.
+     *
+     * <p>Available on /triforce (e.g. localhost:8080/api/triforce)</p>
+     */
+    @RequestMapping(value = "/triforce", method = RequestMethod.POST, produces = "application/json")
+    public String trieforcekiImplementation(@RequestBody Round round) {
+        TrieforceKIImplementation impl = new TrieforceKIImplementation();
         String action = impl.selectAction(round);
         return action;
     }

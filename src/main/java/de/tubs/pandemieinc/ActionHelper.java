@@ -10,6 +10,7 @@ import de.tubs.pandemieinc.events.QuarantineEvent;
 import de.tubs.pandemieinc.events.VaccineAvailableEvent;
 import de.tubs.pandemieinc.events.VaccineDeployedEvent;
 import de.tubs.pandemieinc.events.VaccineInDevelopmentEvent;
+import de.tubs.pandemieinc.events.PathogenEncounteredEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -407,5 +408,21 @@ public class ActionHelper {
             }
         }
         return newCities;
+    }
+
+    public static List<Pathogen> getStartPathogens(Round round) {
+        List<Pathogen> pathogens = new ArrayList();
+        for (BaseEvent event : round.events) {
+            if (event.eventName != PathogenEncounteredEvent.eventName) {
+                continue;
+            }
+
+            PathogenEncounteredEvent pathEvent = (PathogenEncounteredEvent) event;
+            if (pathEvent.round != 1) {
+                continue;
+            }
+            pathogens.add(pathEvent.pathogen);
+        }
+        return pathogens;
     }
 }
