@@ -15,13 +15,21 @@ td {
 }
 </style>
 <body>
-	<h1>Pandemie-Inc: Startseite</h1>
+	<img src="img/pandemieInc.png" width="50%" alt="Pandemie-Inc">
 	<h2>Implementationen</h2>
 	<ul>
-		<li>Wir geben offiziell, die "<b>MedDeadlyFirstImplementation</b>" ab.</li>
+		<li>Wir geben offiziell die "<b>MedDeadlyFirstImplementation</b>" ab.</li>
 		<li>BogoImplementation wählt immer zufällig eine Aktion von den verfügbaren Aktionen aus.</li>
 		<li>EndRoundImplementation wählt immer die Aktion "endRound" aus.</li>
-		<li>Die Beschreibung der anderen Algorithmen befinden sich in der Dokumentation,
+		<li>TriforceKIImplementation ist der "Implementationsselektor" von Kevin, welches
+			probiert MedDeadlyFirstImplementation, MedFastFirstImplementation oder
+			MedSlowFirstImplementation auszuwählen durch die Pathogene, welche am
+			Start der 1, Runde auftauchen.</li>
+		<li>TriforceKIImplementation2 ist der "Implementationsselektor" von Jan, welches
+			probiert MedDeadlyFirstImplementation, MedFastFirstImplementation oder
+			MedSlowFirstImplementation auszuwählen durch die Pathogene, welche am
+			Start der 1, Runde auftauchen.</li>
+		<li>Die Beschreibung der anderen Algorithmen befinden sich in der Dokumentation
 		unter dem Punkt "2. Theoretische Lösung > 2.2 Lösungsansatz > 2.2.2 Strategie".</li>
 	</ul>
 	<p>
@@ -37,6 +45,14 @@ td {
 			<tr>
 				<td>EndRoundImplementation</td>
 				<td>/api/endRound</td>
+			</tr>
+			<tr>
+				<td>TriforceKIImplementation</td>
+				<td>/api/triforce</td>
+			</tr>
+			<tr>
+				<td>TriforceKIImplementation2</td>
+				<td>/api/triforce2</td>
 			</tr>
 			<tr>
 				<td>VaccDeadlyFirstImplementation</td>

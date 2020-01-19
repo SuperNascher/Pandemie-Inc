@@ -1,9 +1,7 @@
 package de.tubs.pandemieinc;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.lang.Comparable;
 import java.util.List;
-
 
 /** Pathogen class to represent a Pathogen from the given "JSON round". */
 public class Pathogen implements Comparable<Pathogen> {
@@ -63,6 +61,7 @@ public class Pathogen implements Comparable<Pathogen> {
         return String.format("Pathogen (%s)", this.name);
     }
 
+    /** Select the order of the pathogens by the attributes. */
     @Override
     public int compareTo(Pathogen o) {
         // Compare to infectivity
@@ -88,12 +87,20 @@ public class Pathogen implements Comparable<Pathogen> {
         return compareValue;
     }
 
+    /**
+     * Parse the first round pathogens to the specified input layer for our neural networks.
+     *
+     * @param pathogens The list of pathogens that was encountered in the first round.
+     * @return A float array as the specified input layer for our neural networks.
+     */
     public static float[] pathogensToNetwork(List<Pathogen> pathogens) {
 
+        // Path 1 Attributes, Path 2 Attributes, Path 3 Attributes
+        // I1 L1 D1 M1 | I2 L2 D2 M2 | I3 L3 D3 M3
         float[] array = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
         int i = 0;
-        for(Pathogen pathogen : pathogens) {
+        for (Pathogen pathogen : pathogens) {
             array[i] = pathogen.infectivity.strengthToNetwork();
             i = i + 1;
             array[i] = pathogen.lethality.strengthToNetwork();

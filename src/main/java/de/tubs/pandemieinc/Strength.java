@@ -42,6 +42,11 @@ public enum Strength {
         return this.representation;
     }
 
+    /**
+     * Parse the Strength to the neural network input value.
+     *
+     * @return The Strength value as numerical input for the neural network.
+     */
     public float strengthToNetwork() {
         if (this.level == -2) {
             return 0.2f;
@@ -51,7 +56,7 @@ public enum Strength {
             return 0.4f;
         }
 
-        if (this.level  == 0) {
+        if (this.level == 0) {
             return 0.6f;
         }
 

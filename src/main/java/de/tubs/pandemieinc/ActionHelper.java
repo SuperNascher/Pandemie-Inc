@@ -10,7 +10,6 @@ import de.tubs.pandemieinc.events.QuarantineEvent;
 import de.tubs.pandemieinc.events.VaccineAvailableEvent;
 import de.tubs.pandemieinc.events.VaccineDeployedEvent;
 import de.tubs.pandemieinc.events.VaccineInDevelopmentEvent;
-import de.tubs.pandemieinc.events.PathogenEncounteredEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

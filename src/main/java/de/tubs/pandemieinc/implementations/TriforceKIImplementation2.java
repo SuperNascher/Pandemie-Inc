@@ -1,30 +1,26 @@
 package de.tubs.pandemieinc.implementations;
 
+import de.tubs.pandemieinc.ActionHelper;
+import de.tubs.pandemieinc.ActionPrinter;
 import de.tubs.pandemieinc.Pathogen;
 import de.tubs.pandemieinc.Round;
-import de.tubs.pandemieinc.ActionPrinter;
-import de.tubs.pandemieinc.ActionHelper;
-import de.tubs.pandemieinc.implementations.MedDeadlyFirstImplementation;
-import de.tubs.pandemieinc.implementations.MedFastFirstImplementation;
-import de.tubs.pandemieinc.implementations.MedSlowFirstImplementation;
-
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ClassPathResource;
-
+import java.util.Collections;
+import java.util.List;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
-public class TrieforceKIImplementation2 implements PandemieImpl {
+/**
+ * Jans trained "selector implementation" network. + Chooses between MedDeadlyFirstImplementation,
+ * MedFastFirstImplementation and MedSlowFirstImplementation.
+ */
+public class TriforceKIImplementation2 implements PandemieImpl {
 
+    // "Neural Networks" / Matrix arrays
     INDArray who;
     INDArray wih1;
     INDArray wih2;
@@ -32,13 +28,16 @@ public class TrieforceKIImplementation2 implements PandemieImpl {
     INDArray bh2;
     INDArray bo;
 
+    // Implementations that are used by the neural network
     MedDeadlyFirstImplementation medDeadlyFirstImplementation = new MedDeadlyFirstImplementation();
     MedFastFirstImplementation medFastFirstImplementation = new MedFastFirstImplementation();
     MedSlowFirstImplementation medSlowFirstImplementation = new MedSlowFirstImplementation();
 
     private static final Logger logger = LoggerFactory.getLogger(FileLoggerDecorator.class);
+    // Used to indicate, if the import has worked or not
+    private boolean importSuccess = false;
 
-    public TrieforceKIImplementation2() {
+    public TriforceKIImplementation2() {
         try {
             Resource resource = new ClassPathResource("kernel3_0.csv");
             this.who = Nd4j.readNumpy(resource.getFile().getPath(), ",").transpose();
@@ -52,14 +51,14 @@ public class TrieforceKIImplementation2 implements PandemieImpl {
             this.wih2 = Nd4j.readNumpy(resource.getFile().getPath(), ",").transpose();
             resource = new ClassPathResource("bias2_0.csv");
             this.bh2 = Nd4j.readNumpy(resource.getFile().getPath(), ",").transpose();
+            this.importSuccess = true;
         } catch (Exception e) {
             logger.error("Could not import model files for Neural Network.", e);
         }
     }
 
     public String selectAction(Round round) {
-        if (!round.outcome.equals("pending") || this.who == null || this.wih1 == null || this.wih2 == null
-            || this.bo == null || this.bh1 == null || this.bh2 == null) {
+        if (!round.outcome.equals("pending") || this.importSuccess == false) {
             return ActionPrinter.endRound();
         }
 
@@ -68,7 +67,9 @@ public class TrieforceKIImplementation2 implements PandemieImpl {
         Collections.sort(pathogens);
 
         // Create input array
-        INDArray input = Nd4j.create(Pathogen.pathogensToNetwork(pathogens), new int[]{12,1});
+        INDArray input = Nd4j.create(Pathogen.pathogensToNetwork(pathogens), new int[] {12, 1});
+
+        // Apply with the trained "network"
         INDArray hiddenInputs1 = this.wih1.mmul(input);
         hiddenInputs1.add(bh1);
         INDArray hiddenOutputs1 = Transforms.elu(hiddenInputs1);
@@ -77,17 +78,19 @@ public class TrieforceKIImplementation2 implements PandemieImpl {
         INDArray hiddenOutputs2 = Transforms.elu(hiddenInputs2);
         INDArray finalInputs = this.who.mmul(hiddenOutputs2);
         finalInputs.add(bo);
+
+        // Get the results from the network
         INDArray finalOutputs = Transforms.softmax(finalInputs);
-        finalOutputs = finalOutputs.tensorAlongDimension(0,0);
+        finalOutputs = finalOutputs.tensorAlongDimension(0, 0);
 
         // Find the highest value
         int i = 1;
-        for (int j = 2; j < 4; j ++) {
+        for (int j = 2; j < 4; j++) {
             if (finalOutputs.getDouble(0, i) < finalOutputs.getDouble(0, j)) {
                 i = j;
             }
         }
-        
+
         // Return the action from the selected Implementation
         if (i == 1) {
             return this.medDeadlyFirstImplementation.selectAction(round);
@@ -96,6 +99,8 @@ public class TrieforceKIImplementation2 implements PandemieImpl {
         } else if (i == 3) {
             return this.medSlowFirstImplementation.selectAction(round);
         }
+
+        // "Default value", if something goes wrong
         return ActionPrinter.endRound();
     }
 }
