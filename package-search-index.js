@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"de.tubs.pandemieinc"},{"l":"de.tubs.pandemieinc.events"},{"l":"de.tubs.pandemieinc.implementations"}]
